@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>{% block title %}GitMark{% endblock %}</title>
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ url_for('static', filename='img/favicon-32x32.png') }}">
+    <link rel="icon" type="image/png" sizes="96x96" href="{{ url_for('static', filename='img/favicon-96x96.png') }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon-16x16.png') }}">
+    
+    <!-- Bootstrap Core CSS -->
+    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/gitmark.css') }}" rel="stylesheet">
+
+    
+    <!-- Custom CSS -->
+    
+    {% block css %}{% endblock %}
+    <!-- Custom Fonts -->
+    
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+{% import "_msg.html" as messages %}
+{{ messages.render_msg() }}
+    <!-- Navigation -->
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">GitMark <i class="fa fa-user"></i></a>
+        </div>
+
+        {% if current_user.is_authenticated %}
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav">
+            <li class="_active"><a href="#"><i class="fa fa-home"></i> Home <span class="sr-only">(current)</span></a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-code"></i> Repositories <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#"><i class="fa fa-star"></i> Starred Repos</a></li>
+                <li><a href="#"><i class="fa fa-download"></i> Import Starred Repos</a></li>
+                <li class="divider"></li>
+                <li><a href="#"><i class="fa fa-list-ul"></i> All Repos</a></li>
+                <li><a href="#"><i class="fa fa-download"></i> Import Repos</a></li>
+                <li><a href="#"><i class="fa fa-pencil-square-o"></i> Edit Repos</a></li>
+              </ul>
+            </li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-cubes"></i> Collection <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#"><i class="fa fa-star"></i> My Collections</a></li>
+                <li><a href="#"><i class="fa fa-eye"></i> Following Collections</a></li>
+                <!-- <li><a href="#">Something else here</a></li> -->
+                <li class="divider"></li>
+                <li><a href="#"><i class="fa fa-pencil-square-o"></i> Edit Collections</a></li>
+              </ul>
+            </li>
+            <li><a href="#"><i class="fa fa-folder-open"></i> Explore</a></li>
+            <!-- <li><a href="#"><i class="fa fa-cubes"></i> Collection</a></li> -->
+            
+          </ul>
+          
+          <ul class="nav navbar-nav navbar-right">
+          
+            <form class="navbar-form navbar-left" role="search" method="get">
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Search" name="key">
+                </div>
+                <button type="submit" class="btn btn-default">Submit</button>
+            </form>
+          
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{ current_user.username }} <span class="caret"></span></a>
+              <ul class="dropdown-menu" role="menu">
+                <li><a href="#"><i class="fa fa-cogs"></i> Settings</a></li>
+                <!-- <li><a href="#">Another action</a></li> -->
+                <!-- <li><a href="#">Something else here</a></li> -->
+                <li class="divider"></li>
+                <li><a href="#"><i class="fa fa-sign-out"></i> Exit</a></li>
+              </ul>
+            </li>
+          </ul>
+
+        </div><!-- /.navbar-collapse -->
+        {% else %}
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#"><i class="fa fa-sign-in"></i> Login</a></li>
+            <li><a href="#"><i class="fa fa-plug"></i> Register</a></li>
+          </ul>
+        </div>
+        {% endif %}
+      </div><!-- /.container-fluid -->
+    </nav>
+
+
+    <!-- Page Header -->
+    <!-- Set your background image for this header on the line below. -->
+    {%block header %}{% endblock %}
+    <div class="container">
+        <!-- Main Content -->
+        
+        {%block main %}{% endblock %}
+    </div>
+    <hr>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                    <ul class="list-inline text-center">
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-twitter fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-facebook fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">
+                                <span class="fa-stack fa-lg">
+                                    <i class="fa fa-circle fa-stack-2x"></i>
+                                    <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                                </span>
+                            </a>
+                        </li>
+                    </ul>
+                    <p class="copyright text-muted text-center">Copyright &copy; GitMark 2016</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- jQuery -->
+    <script src="http://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+    <!-- Bootstrap Core JavaScript -->
+    <script src="http://cdn.staticfile.org/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="http://cdn.staticfile.org/bootbox.js/4.3.0/bootbox.min.js"></script>
+    <!-- Custom Theme JavaScript -->
+    {% block js %}
+    {% endblock %}
+    
+</body>
+</html>
