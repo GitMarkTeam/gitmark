@@ -3,10 +3,12 @@
 
 import os, sys
 
+from env import github, qiniu
+
 GitmarkSettings = {
     # 'post_types': ('post', 'page'),
     'allow_registration': os.environ.get('allow_registration', 'true').lower() == 'true',
-    'allow_su_creation': os.environ.get('allow_su_creation', 'false').lower() == 'true',
+    'allow_su_creation': os.environ.get('allow_su_creation', 'true').lower() == 'true',
     # 'allow_donate': os.environ.get('allow_donate', 'true').lower() == 'true',
     # 'auto_role': os.environ.get('auto_role', 'reader').lower(),
     # 'gitmark_meta': {
@@ -18,11 +20,26 @@ GitmarkSettings = {
     #     'google_site_verification': os.environ.get('google_site_verification') or '12345678',
     #     'baidu_site_verification': os.environ.get('baidu_site_verification') or '87654321',
     # },
-    # 'pagination':{
-    #     'per_page': int(os.environ.get('per_page', 5)),
-    #     'admin_per_page': int(os.environ.get('admin_per_page', 10)),
-    #     'archive_per_page': int(os.environ.get('admin_per_page', 20)),
-    # },
+    'pagination':{
+        'per_page': int(os.environ.get('per_page', 5)),
+        'admin_per_page': int(os.environ.get('admin_per_page', 10)),
+        'archive_per_page': int(os.environ.get('admin_per_page', 20)),
+    },
+    'github': {
+        'client_id': os.environ.get('GITHUB_ID') or github['client_id'],
+        'client_secret': os.environ.get('GITHUB_SECRET') or github['client_secret'],
+        'app_user': os.environ.get('APP_USER') or github['app_user'],
+        'app_pass': os.environ.get('APP_PASS') or github['app_pass'],
+        'page_limit_large': 100,
+        'page_limit_medium': 50,
+        'page_limit_small': 30,
+    },
+    'qiniu':{
+        'access_key': os.environ.get('QINIU_AK') or qiniu['access_key'],
+        'secret_key': os.environ.get('QINIU_SK') or qiniu['secret_key'],
+        'bucket_name': os.environ.get('BUCKET') or qiniu['bucket_name'],
+        'base_url': os.environ.get('QINIU_URL') or qiniu['base_url'],
+    }
     # 'blog_comment':{
     #     'allow_comment': os.environ.get('allow_comment', 'true').lower() == 'true',
     #     'comment_type': os.environ.get('comment_type', 'duoshuo').lower(), # currently, OctBlog only supports duoshuo comment
@@ -42,6 +59,20 @@ class Config(object):
 
     TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates').replace('\\', '/')
     STATIC_PATH = os.path.join(BASE_DIR, 'static').replace('\\', '/')
+
+
+    ################################
+    # Celery settings
+    ################################
+
+    BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_ACCEPT_CONTENT=['json']
+    CELERY_TIMEZONE = 'Asia/Shanghai'
+    CELERY_ENABLE_UTC = True
+    CELERY_IGNORE_RESULT = False
 
 
     @staticmethod

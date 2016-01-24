@@ -10,6 +10,12 @@
         {{ forms.render(form) }}
             <button type="submit" class="btn btn-primary" name="register">Register</button>
         </form>
+        {% if not create_su %}
+            <hr>
+            <form method="POST" action="">
+                <button type="submit" class="btn btn-success" name="github" value='true'> Register with <i class="fa fa-github"></i></button>
+            </form>
+        {% endif %}
     </div>
     <div class="col-xs-6 col-sm-3"></div>
 </div>

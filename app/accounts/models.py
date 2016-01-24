@@ -5,7 +5,7 @@ from gitmark import db, login_manager
 
 # ROLES = ('admin', 'editor', 'writer', 'reader')
 ROLES = (('admin', 'admin'),
-            ('editor', 'editor'),
+            ('general', 'general'),
             ('writer', 'writer'),
             ('reader', 'reader'))
 SOCIAL_NETWORKS = {
@@ -26,8 +26,10 @@ class User(UserMixin, db.Document):
     is_email_confirmed = db.BooleanField(default=False)
     # is_active = db.BooleanField(default=True)
     is_superuser = db.BooleanField(default=False)
-    role = db.StringField(max_length=32, default='reader', choices=ROLES)
+    role = db.StringField(max_length=32, default='general', choices=ROLES)
     display_name = db.StringField(max_length=255, default='Anonymous')
+    github_username = db.StringField(max_length=255)
+    github_url = db.URLField()
     biography = db.StringField()
     social_networks = db.DictField(default=SOCIAL_NETWORKS)
     homepage_url = db.URLField()

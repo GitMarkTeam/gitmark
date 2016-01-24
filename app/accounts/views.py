@@ -7,28 +7,58 @@ from flask.views import MethodView
 from flask.ext.login import login_user, logout_user, login_required, current_user
 from flask.ext.principal import Identity, AnonymousIdentity, identity_changed
 
-from . import models, forms
+from . import models, forms, github_auth
 from permissions import admin_permission, su_permission
 from gitmark.config import GitmarkSettings
 
-def login():
-    form = forms.LoginForm()
-    if form.validate_on_submit():
-        try:
-            user = models.User.objects.get(username=form.username.data)
-        except models.User.DoesNotExist:
-            user = None
+# def login():
+#     form = forms.LoginForm()
+#     if form.validate_on_submit():
+#         try:
+#             user = models.User.objects.get(username=form.username.data)
+#         except models.User.DoesNotExist:
+#             user = None
 
-        if user and user.verify_password(form.password.data):
-            login_user(user, form.remember_me.data)
-            user.last_login = datetime.datetime.now
-            user.save()
-            identity_changed.send(current_app._get_current_object(), identity=Identity(user.username))
-            return redirect(request.args.get('next') or url_for('main.index'))
+#         if user and user.verify_password(form.password.data):
+#             login_user(user, form.remember_me.data)
+#             user.last_login = datetime.datetime.now
+#             user.save()
+#             identity_changed.send(current_app._get_current_object(), identity=Identity(user.username))
+#             return redirect(request.args.get('next') or url_for('main.index'))
 
-        flash('Invalid username or password', 'danger')
+#         flash('Invalid username or password', 'danger')
 
-    return render_template('accounts/login.html', form=form)
+#     return render_template('accounts/login.html', form=form)
+
+class LoginView(MethodView):
+    template_name = 'accounts/login.html'
+
+    def get(self, form=None):
+        if not form:
+            form = forms.LoginForm()
+        return render_template(self.template_name, form=form)
+
+    def post(self):
+        if request.form.get('login_github'):
+            session['oauth_callback_type'] = 'login'
+            return github_auth.github_auth()
+            # return 'login_github'
+
+        form = forms.LoginForm(obj=request.form)
+        if form.validate():
+            try:
+                user = models.User.objects.get(username=form.username.data)
+            except models.User.DoesNotExist:
+                user = None
+
+            if user and user.verify_password(form.password.data):
+                login_user(user, form.remember_me.data)
+                user.last_login = datetime.datetime.now
+                user.save()
+                identity_changed.send(current_app._get_current_object(), identity=Identity(user.username))
+                return redirect(request.args.get('next') or url_for('main.index'))
+            flash('Invalid username or password', 'danger')
+        return self.get(form=form)
 
 @login_required
 def logout():
@@ -69,6 +99,46 @@ def register(create_su=False):
 
     return render_template('accounts/registration.html', form=form)
 
+class RegistrationView(MethodView):
+    template_name = 'accounts/registration.html'
+
+    def get(self, form=None, create_su=False):
+        if not GitmarkSettings['allow_registration']:
+            msg = 'Register is forbidden, please contact administrator'
+            return msg
+
+        if create_su and not GitmarkSettings['allow_su_creation']:
+            msg = 'Register superuser is forbidden, please contact administrator'
+            return msg
+
+        if not form:
+            form = forms.RegistrationForm()
+
+        return render_template(self.template_name, form=form, create_su=create_su)
+
+    def post(self, create_su=False):
+        if request.form.get('github'):
+            session['oauth_callback_type'] = 'register'
+            return github_auth.github_auth()
+            # return 'github register'
+
+        form = forms.RegistrationForm(obj=request.form)
+        if form.validate():
+            user = models.User()
+            user.username = form.username.data
+            user.password = form.password.data
+            user.email = form.email.data
+
+            user.display_name = user.username
+            
+            if create_su and GitmarkSettings['allow_su_creation']:
+                user.is_superuser = True
+            user.save()
+
+            return redirect(url_for('main.index'))
+        return self.get(form=form, create_su=create_su)
+
+
 @login_required
 def add_user():
     form = forms.RegistrationForm()
@@ -92,14 +162,14 @@ def get_current_user():
 
 
 class Users(MethodView):
-    decorators = [login_required, admin_permission.require(401)]
+    # decorators = [login_required, admin_permission.require(401)]
     template_name = 'accounts/users.html'
     def get(self):
         users = models.User.objects.all()
         return render_template(self.template_name, users=users)
 
 class User(MethodView):
-    decorators = [login_required, admin_permission.require(401)]
+    # decorators = [login_required, admin_permission.require(401)]
     template_name = 'accounts/user.html'
 
     def get_context(self, username, form=None):

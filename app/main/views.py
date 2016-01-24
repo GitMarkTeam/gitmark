@@ -8,4 +8,5 @@ def hello():
     return 'hello, world'
 
 def index():
-    return 'index'
+    # return 'index'
+    return render_template('main/index.html')
