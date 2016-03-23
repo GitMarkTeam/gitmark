@@ -19,7 +19,7 @@
     <tbody>
     {% for user in users %}
         <tr id="user-{{ user.username }}">
-            <td>{{ loop.counter }}</td>
+            <td>{{ loop.index }}</td>
             <td><a href="{{ url_for('accounts.edit_user', username=user.username)}}">{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
@@ -31,10 +31,10 @@
             <td>
                 <a href="{{ url_for('accounts.edit_user', username=user.username)}}"><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> </a>
                 &nbsp
-                <a href="#"  class="del-user"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> </a>
+                <a href="{{ url_for('accounts.edit_user', username=user.username)}}"  class="del-user"><span class="glyphicon glyphicon-trash" aria-hidden="true"></span> </a>
             </td>
         </tr>
-        {% else %}
+    {% else %}
         <tr><td colspan="7">No user yet</td></tr>
     {% endfor %}     
     </tbody>

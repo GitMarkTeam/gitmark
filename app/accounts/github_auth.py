@@ -88,6 +88,7 @@ def github_register_behavior():
     github_user = res.json()
     username = github_user.get('login')
     email = github_user.get('email')
+    print 'email: {0}'.format(email)
     github_url = github_user.get('html_url')
     github_avatar_url = github_user.get('avatar_url')
 
