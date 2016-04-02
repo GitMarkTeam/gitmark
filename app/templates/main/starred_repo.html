@@ -40,17 +40,41 @@
     {% endfor %}
 
     {% import '_pagination.html' as pagination %}
-    {{ pagination.render_pagination(starred_repos) }}
+    {{ pagination.render_pagination(starred_repos, url_params) }}
 
 
     </div>
-    <div class="col-md-3">
+    <!-- <div class="col-md-3">
         <h4>Filter by Language <i class="fa fa-filter"></i> </h4>
         <hr>
         <div class="list-group">
             {% for language in languages %}
-                    <a href="#" class="list-group-item no-border-group-list ">{{ language }} 
+                {% if cur_language == language %}
+                    <a href="?language={{ language }}" class="list-group-item no-border-group-list active">{{ language }} 
+                    <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
                     <span class="badge">&nbsp; 2048 &nbsp;</span></a>
+                {% else %}
+                    <a href="?language={{ language }}" class="list-group-item no-border-group-list ">{{ language }} 
+                    <span class="badge">&nbsp; 2048 &nbsp;</span></a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div> -->
+    <div class="col-md-3">
+        <h4>Filter by Language <i class="fa fa-filter"></i> </h4>
+        <hr>
+        <div class="list-group">
+            {% for language in language_cursor %}
+            {% if language %}
+                {% if cur_language == language.name %}
+                    <a href="?language={{language.name }}" class="list-group-item no-border-group-list active">{{ language.name }} 
+                    <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
+                    <span class="badge">&nbsp; {{ language.count }} &nbsp;</span></a>
+                {% else %}
+                    <a href="?language={{ language.name }}" class="list-group-item no-border-group-list ">{{ language.name }} 
+                    <span class="badge">&nbsp; {{ language.count }} &nbsp;</span></a>
+                {% endif %}
+            {% endif %}
             {% endfor %}
         </div>
     </div>
@@ -60,6 +84,13 @@
 
 {% block js %}
 <script type="text/javascript">
+    $('.rm-filter').on('click', function (event) {
+        location.href = ".";
+        return false;
+      });
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    });
 
 </script>
 {% endblock %}
