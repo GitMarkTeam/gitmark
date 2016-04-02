@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+        {% if starred %}
+        <h3>Import My Starred Repos</h3>
+        <form method="POST">
+            <button type="submit" class="btn btn-primary" name="import_mine" value="true">Import from <i class="fa fa-github"></i></button>
+        </form>
+
+        <hr>
+
+        {% endif %}
+
+        <h3>Import From Other's Starred Repos </h3>
+        <form method="POST">
+            <div class="form-group">
+                <!-- <label for="InputGitHubUsername">Import From Other's Starred Repos </label> -->
+                <input type="text" class="form-control" id="InputGitHubUsername" placeholder="GitHub username" name="github_username">
+            </div>
+            {% if starred %}
+                <button type="submit" class="btn btn-primary">Import</button>
+            {% else %}
+                <button type="submit" class="btn btn-success">Import To GitMark</button>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+{% endblock %}

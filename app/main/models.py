@@ -1,9 +1,9 @@
-import datetime
+from datetime import datetime
 from flask import url_for
 
 import markdown2
 
-from OctBlog import db
+from gitmark import db
 # from accounts.Documents import User
 
 # class Post(db.Document):
@@ -50,52 +50,56 @@ from OctBlog import db
 
 
 # class GitMarkMeta(db.Document):
-#     key = db.CharField(max_length=256)
-#     value = db.CharField(max_length=256, null=True, blank=True)
+#     key = db.StringField(max_length=256)
+#     value = db.StringField(max_length=256, null=True, blank=True)
 #     flag = db.BooleanField(default=False)
-#     misc = db.CharField(max_length=256, null=True, blank=True)
+#     misc = db.StringField(max_length=256, null=True, blank=True)
 
 #     def __unicode__(self):
 #         return self.key
 
-# class Language(db.Document):
-#     name = db.CharField(max_length=128)
-#     def __unicode__(self):
-#         return self.name
+
+class GitmarkMeta(db.Document):
+    key = db.StringField(max_length=64)
+    value_list = db.ListField(db.StringField())
 
 class Repo(db.Document):
-    name = db.CharField(max_length=128)
-    full_name = db.CharField(max_length=128, unique=True)
+    name = db.StringField(max_length=128)
+    full_name = db.StringField(max_length=128, unique=True)
     link = db.URLField()
+    author = db.StringField(max_length=128)
+    author_link = db.URLField(required=False)
+    desc = db.StringField()
+    language = db.StringField(max_length=64)
+    create_time = db.DateTimeField(required=True, default=datetime.now())
+    update_time = db.DateTimeField(required=True, default=datetime.now())
+    starred_users = db.ListField(db.StringField()) 
+    tags = db.ListField(db.StringField(max_length=30))
 
-    author = db.CharField(max_length=128)
-    author_link = db.URLField(blank=True, null=True)
-    desc = db.TextField(blank=True, null=True)
-    language = db.ForeignKey(Language, blank=True, null=True)
-    create_date = db.DateTimeField(auto_now_add=True)
-    # starred_users = db.ManyToManyField(User, blank=True) 
-
-    def __unicode__(self):
-        return self.name
-
-class Tag(db.Document):
-    name = db.CharField(max_length=128)
-    repos = db.ManyToManyField(Repo, blank=True)
-    counts = db.IntegerField(default=0)
+    def save(self, *args, **kwargs):
+        self.update_time = datetime.now()
+        return super(Repo, self).save(*args, **kwargs)
 
     def __unicode__(self):
-        return self.name
+        return self.full_name
 
-class Collection(db.Document):
-    name = db.CharField(max_length=128)
-    description = db.TextField(blank=True)
-    user = db.ForeignKey(User)
-    repos = db.ManyToManyField(Repo, blank=True)
-    last_update = db.DateTimeField(auto_now=True)
-    create_date = db.DateTimeField(auto_now_add=True)
+    meta = {
+        'allow_inheritance': True,
+        'indexes': ['full_name'],
+        'ordering': ['-create_time']
+    }
 
-    class Meta:
-        ordering = ['-create_date']
 
-    def __unicode__(self):
-        return self.user.username + '->' + self.name
+# class Collection(db.Document):
+#     name = db.StringField(max_length=128)
+#     description = db.StringField(blank=True)
+#     user = db.ForeignKey(User)
+#     repos = db.ManyToManyField(Repo, blank=True)
+#     last_update = db.DateTimeField(auto_now=True)
+#     create_date = db.DateTimeField(auto_now_add=True)
+
+#     class Meta:
+#         ordering = ['-create_date']
+
+#     def __unicode__(self):
+#         return self.user.username + '->' + self.name

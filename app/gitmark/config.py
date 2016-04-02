@@ -3,7 +3,7 @@
 
 import os, sys
 
-from env import github, qiniu
+# from env import github, qiniu
 
 GitmarkSettings = {
     # 'post_types': ('post', 'page'),
@@ -21,24 +21,24 @@ GitmarkSettings = {
     #     'baidu_site_verification': os.environ.get('baidu_site_verification') or '87654321',
     # },
     'pagination':{
-        'per_page': int(os.environ.get('per_page', 5)),
-        'admin_per_page': int(os.environ.get('admin_per_page', 10)),
-        'archive_per_page': int(os.environ.get('admin_per_page', 20)),
+        'per_page': int(os.environ.get('per_page', 10)),
+        'admin_per_page': int(os.environ.get('admin_per_page', 20)),
+        'archive_per_page': int(os.environ.get('admin_per_page', 50)),
     },
     'github': {
-        'client_id': os.environ.get('GITHUB_ID') or github['client_id'],
-        'client_secret': os.environ.get('GITHUB_SECRET') or github['client_secret'],
-        'app_user': os.environ.get('APP_USER') or github['app_user'],
-        'app_pass': os.environ.get('APP_PASS') or github['app_pass'],
+        'client_id': os.environ.get('GITHUB_ID'),
+        'client_secret': os.environ.get('GITHUB_SECRET'),
+        'app_user': os.environ.get('APP_USER'),
+        'app_pass': os.environ.get('APP_PASS'),
         'page_limit_large': 100,
         'page_limit_medium': 50,
         'page_limit_small': 30,
     },
     'qiniu':{
-        'access_key': os.environ.get('QINIU_AK') or qiniu['access_key'],
-        'secret_key': os.environ.get('QINIU_SK') or qiniu['secret_key'],
-        'bucket_name': os.environ.get('BUCKET') or qiniu['bucket_name'],
-        'base_url': os.environ.get('QINIU_URL') or qiniu['base_url'],
+        'access_key': os.environ.get('QINIU_AK'),
+        'secret_key': os.environ.get('QINIU_SK'),
+        'bucket_name': os.environ.get('BUCKET'),
+        'base_url': os.environ.get('QINIU_URL'),
     }
     # 'blog_comment':{
     #     'allow_comment': os.environ.get('allow_comment', 'true').lower() == 'true',
@@ -83,18 +83,19 @@ class Config(object):
     STATIC_PATH = os.path.join(BASE_DIR, 'static').replace('\\', '/')
 
 
-    ################################
-    # Celery settings
-    ################################
+    ########################
+    # Celery Config
+    ########################
 
-    # BROKER_URL = 'redis://localhost:6379/0'
-    # CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
-    # CELERY_TASK_SERIALIZER = 'json'
-    # CELERY_RESULT_SERIALIZER = 'json'
-    # CELERY_ACCEPT_CONTENT=['json']
-    # CELERY_TIMEZONE = 'Asia/Shanghai'
-    # CELERY_ENABLE_UTC = True
-    # CELERY_IGNORE_RESULT = False
+    BROKER_URL = 'redis://localhost:6379/0'
+    CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
+    CELERY_ACCEPT_CONTENT=['json']
+    CELERY_TIMEZONE = 'Asia/Shanghai'
+    CELERY_ENABLE_UTC = True
+    CELERY_IGNORE_RESULT = False
+    CELERY_IMPORTS = ('main.tasks')
 
 
     @staticmethod

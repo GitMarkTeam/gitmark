@@ -1,6 +1,7 @@
 from flask import Blueprint
 
 from . import views, github_auth
+# from gitmark import app as accounts
 
 accounts = Blueprint('accounts', __name__)
 

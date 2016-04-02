@@ -5,10 +5,16 @@ sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
 from flask.ext.script import Manager, Server
 
-from gitmark import create_app, db
+from gitmark import GitmarkApp, create_app, register_blueprint
 
-app = create_app(os.getenv('config') or 'default')
-manager = Manager(app)
+# manager = Manager(app)
+
+# flask_app = GitmarkApp()
+# flask_app.register_blueprint()
+# manager = Manager(flask_app.app)
+
+app = create_app()
+manager = Manager(register_blueprint(app))
 
 # Turn on debugger by default and reloader
 manager.add_command("runserver", Server(

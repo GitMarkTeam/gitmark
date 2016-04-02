@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="row">
+    <div class="col-md-7 col-md-offset-1">
+    {% for starred_repo in starred_repos.items %}
+        <div class="row">
+            <div class="col-md-12">
+                <h3><a href="{{ starred_repo.link }}" target="_blank">{{ starred_repo.full_name}}</a></h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-8">
+                <p>{{ starred_repo.desc }}</p>
+                <p><span class="label label-default"><small>{{ starred_repo.language }}</small></span></p>
+            </div>
+            <div class="col-md-4">
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-default btn-sm btn-star" data-url="#">
+                   <i class="fa fa-star"></i> unstar</button>
+
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                      Collections
+                      <span class="caret"></span>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><input type="checkbox"> collection 1</li>
+                      <li><input type="checkbox"> collection 2</li>
+                    </ul>
+                  </div>
+                </div>
+            </div>
+        </div>
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+    {% else %}
+        No starred repos yet!
+    {% endfor %}
+
+    {% import '_pagination.html' as pagination %}
+    {{ pagination.render_pagination(starred_repos) }}
+
+
+    </div>
+    <div class="col-md-3">
+        <h4>Filter by Language <i class="fa fa-filter"></i> </h4>
+        <hr>
+        <div class="list-group">
+            {% for language in languages %}
+                    <a href="#" class="list-group-item no-border-group-list ">{{ language }} 
+                    <span class="badge">&nbsp; 2048 &nbsp;</span></a>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+
+</script>
+{% endblock %}
