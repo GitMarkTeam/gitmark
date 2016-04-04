@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-collection">
+      Add Collection 
+    </button>
+
+    {% import "_form.html" as forms %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="add-collection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">Add New Collection</h4>
+          </div>
+          <form method="POST">
+              <div class="modal-body">
+                {{ forms.render(form) }}
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary">Save</button>
+              </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <table class="table">
+        <thead>
+            <th>No.</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Create Time</th>
+            <th>Update Time</th>
+            <th>Actions</th>
+        </thead>
+        <tbody>
+        {% for collection in collections %}
+        <tr>
+            <td>{{ loop.index }}</td>
+            <td><a href="#">{{ collection.name }}</a></td>
+            <td>{{ collection.description|default('No description yet', true) }}</td>
+            <td>{{ collection.create_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>{{ collection.last_update.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+            <td>
+                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="#"><i class="fa fa-trash"></i></a>
+            </td>
+        </tr>
+            
+        {% endfor %}
+        </tbody>
+    </table>
+
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+    $('#add-collection').on('shown.bs.modal', function () {
+  $('#myInput').focus()
+})
+</script>
+{% endblock %}

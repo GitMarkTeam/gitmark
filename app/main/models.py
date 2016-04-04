@@ -90,16 +90,19 @@ class Repo(db.Document):
     }
 
 
-# class Collection(db.Document):
-#     name = db.StringField(max_length=128)
-#     description = db.StringField(blank=True)
-#     user = db.ForeignKey(User)
-#     repos = db.ManyToManyField(Repo, blank=True)
-#     last_update = db.DateTimeField(auto_now=True)
-#     create_date = db.DateTimeField(auto_now_add=True)
+class Collection(db.Document):
+    name = db.StringField(max_length=128)
+    description = db.StringField()
+    owner = db.StringField(max_length=128)
+    repos = db.ListField(db.DictField())
+    last_update = db.DateTimeField(default=datetime.now())
+    create_date = db.DateTimeField(default=datetime.now())
 
-#     class Meta:
-#         ordering = ['-create_date']
+    meta = {
+        'allow_inheritance': True,
+        'indexes': ['name'],
+        'ordering': ['-create_date']
+    }
 
-#     def __unicode__(self):
-#         return self.user.username + '->' + self.name
+    def __unicode__(self):
+        return u'{0} -> {1}'.format(self.owner, self.name)

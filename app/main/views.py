@@ -4,7 +4,7 @@ from flask.views import MethodView
 
 from flask.ext.login import login_required, current_user
 
-from . import models, tasks
+from . import models, tasks, forms
 from gitmark.config import GitmarkSettings
 
 PER_PAGE = GitmarkSettings['pagination']['per_page']
@@ -105,3 +105,30 @@ class ImportRepoView(MethodView):
         msg = 'Start importing at background'
         flash(msg)
         return redirect('.')
+
+class MyCollectionView(MethodView):
+    decorators = [login_required]
+    template_name = 'main/collections.html'
+
+    def get(self, form=None):
+        if not form:
+            form = forms.CollectionForm()
+        collections = models.Collection.objects(owner=current_user.username)
+
+        data = { 'collections':collections, 'form':form }
+
+        return render_template(self.template_name, **data)
+
+    def post(self):
+        form = forms.CollectionForm(obj=request.form)
+        if form.validate():
+            collection = models.Collection()
+            collection.name = form.name.data
+            collection.description = form.description.data
+            collection.owner = current_user.username
+
+            collection.save()
+
+            return redirect(url_for('main.my_collections'))
+
+        return self.get(form=form)

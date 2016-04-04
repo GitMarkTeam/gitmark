@@ -14,7 +14,7 @@
     <link rel="icon" type="image/png" sizes="16x16" href="{{ url_for('static', filename='img/favicon-16x16.png') }}">
     
     <!-- Bootstrap Core CSS -->
-    <link href="//cdn.bootcss.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
     <link href="//cdn.bootcss.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/gitmark.css') }}" rel="stylesheet">
 
@@ -67,7 +67,7 @@
             <li class="dropdown">
               <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-cubes"></i> Collection <span class="caret"></span></a>
               <ul class="dropdown-menu" role="menu">
-                <li><a href="#"><i class="fa fa-star"></i> My Collections</a></li>
+                <li><a href="{{ url_for('main.my_collections') }}"><i class="fa fa-star"></i> My Collections</a></li>
                 <li><a href="#"><i class="fa fa-eye"></i> Following Collections</a></li>
                 <!-- <li><a href="#">Something else here</a></li> -->
                 <li class="divider"></li>
@@ -167,10 +167,10 @@
     </footer>
 
     <!-- jQuery -->
-    <script src="http://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/jquery/2.2.1/jquery.min.js"></script>
 
     <!-- Bootstrap Core JavaScript -->
-    <script src="http://cdn.staticfile.org/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
     <script src="http://cdn.staticfile.org/bootbox.js/4.3.0/bootbox.min.js"></script>
     <!-- Custom Theme JavaScript -->
     {% block js %}
