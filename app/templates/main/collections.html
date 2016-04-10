@@ -51,7 +51,7 @@
             <td>{{ collection.last_update.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>
                 <a href="#"><i class="fa fa-pencil-square-o"></i></a>
-                <a href="#"><i class="fa fa-trash"></i></a>
+                <a href="#" class="del-collection" data-id={{ collection.id }}><i class="fa fa-trash"></i></a>
             </td>
         </tr>
             
@@ -66,8 +66,17 @@
 
 {% block js %}
 <script type="text/javascript">
-    $('#add-collection').on('shown.bs.modal', function () {
-  $('#myInput').focus()
-})
+  $('#add-collection').on('shown.bs.modal', function () {
+    $('#myInput').focus()
+  });
+  $('.del-collection').click(function(){
+    id = $(this).data('id')
+    bootbox.confirm("Are you sure?", function(result){
+      if(result){
+        alert(id);
+      }
+    });
+
+  })
 </script>
 {% endblock %}
