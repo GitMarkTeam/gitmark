@@ -50,7 +50,7 @@
             <td>{{ collection.create_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>{{ collection.last_update.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>
-                <a href="#"><i class="fa fa-pencil-square-o"></i></a>
+                <a href="{{ url_for('main.edit_collection', collection_id=collection.id )}}"><i class="fa fa-pencil-square-o"></i></a>
                 <a href="#" class="del-collection" data-id={{ collection.id }}><i class="fa fa-trash"></i></a>
             </td>
         </tr>

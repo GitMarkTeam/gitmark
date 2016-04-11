@@ -106,7 +106,7 @@ class ImportRepoView(MethodView):
         flash(msg)
         return redirect('.')
 
-class MyCollectionView(MethodView):
+class MyCollectionsView(MethodView):
     decorators = [login_required]
     template_name = 'main/collections.html'
 
@@ -132,3 +132,40 @@ class MyCollectionView(MethodView):
             return redirect(url_for('main.my_collections'))
 
         return self.get(form=form)
+
+
+class MyCollectionEditView(MethodView):
+    decorators = [login_required, ]
+    template_name = 'main/simple_form.html'
+
+    def get(self, collection_id, form=None):
+        collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
+        if not collection:
+            return 'no collection', 404
+
+        if not form:
+            form = forms.CollectionForm(obj=collection)
+
+        data = {'form':form}
+        return render_template(self.template_name, **data)
+
+    def post(self, collection_id, form=None):
+        collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
+        if not collection:
+            return 'no collection', 404
+
+        form = forms.CollectionForm(obj=request.form)
+        name = form.name.data
+        description = form.description.data
+
+        collection.name = name
+        collection.description = description
+
+        collection.save()
+        msg = 'Succeed to update this collection'
+        flash(msg, 'success')
+
+        return redirect(url_for('main.my_collections'))
+
+
+
