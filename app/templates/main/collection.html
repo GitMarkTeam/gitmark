@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="row">
+    <div class="col-md-8 col-md-offset-1">
+        <div class="row">
+            <ol class="breadcrumb">
+              <li><a href="{{ url_for('main.my_collections') }}">Collections</a></li>
+              <li class="active">{{ cur_collection.name }}</li>
+            </ol>
+        </div>
+        
+        <div class="row">
+            <div class="btn-group" role="group" aria-label="...">
+              <button type="button" class="btn btn-primary"><a href="#"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
+              <button type="button" class="btn btn-primary"><a href="#"><i class="fa fa-trash"></i> Clear</a></button>
+            </div>
+        </div>
+        <div class="row">
+            {% for repo in cur_collection.repos %}
+            <div class="col-md-9">
+                <h3><a href="{{ repo.get('link') }}" target="_blank" >{{ repo.get('full_name')}}</a></h3>
+                <p>{{ repo.get('desc')}}</p>
+                <p>
+                    <span class="label label-default"><small>{{repo.get('language')}}</small></span> &nbsp;
+                    <i class="fa fa-star"></i> &nbsp;
+                    <i class="fa fa-trash"></i>
+                </p>
+                <hr>
+            </div>
+
+            {% else %}
+            <div class="col-md-9">
+                <br><br>
+                <p>No collection yet</p>
+            </div>
+            
+            {% endfor %}
+        </div>
+        
+    </div>
+    <div class="col-md-3">
+        <h4>Collections</h4><hr>
+        <ul class="list-group">
+        {% for collection in collections %}
+          {% if cur_collection.id == collection.id %}
+                <a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}" class="list-group-item no-border-group-list active">{{ collection.name }} 
+                <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
+                </a>
+            {% else %}
+                <a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}" class="list-group-item no-border-group-list ">{{ collection.name }}</a>
+            {% endif %}
+        {% endfor %}
+        </ul>
+
+    </div>
+</div>
+{% endblock %}
+
+
+
+{% block js %}
+<script type="text/javascript">
+    $('.rm-filter').on('click', function (event) {
+        location.href = "{{ url_for('main.my_collections') }}";
+        return false;
+      });
+
+</script>
+{% endblock %}

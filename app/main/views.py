@@ -181,5 +181,20 @@ class MyCollectionEditView(MethodView):
 
         return redirect(url_for('main.my_collections'))
 
+class CollectionView(MethodView):
+    template_name = 'main/collection.html'
+    def get(self, collection_id):
+        collection = models.Collection.objects(id=collection_id).first()
+        if not collection:
+            return 'no collection', 404
+
+        data = {'cur_collection': collection, 'collections':None}
+
+        if collection.owner == current_user.username:
+            collections = collections = models.Collection.objects(owner=current_user.username)
+            data['collections'] = collections
+
+        return render_template(self.template_name, **data)
+
 
 

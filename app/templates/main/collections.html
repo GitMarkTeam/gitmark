@@ -45,7 +45,7 @@
         {% for collection in collections %}
         <tr>
             <td>{{ loop.index }}</td>
-            <td><a href="#">{{ collection.name }}</a></td>
+            <td><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">{{ collection.name }}</a></td>
             <td>{{ collection.description|default('No description yet', true) }}</td>
             <td>{{ collection.create_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>{{ collection.last_update.strftime('%Y-%m-%d %H:%M:%S') }}</td>
