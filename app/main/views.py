@@ -167,5 +167,19 @@ class MyCollectionEditView(MethodView):
 
         return redirect(url_for('main.my_collections'))
 
+    def delete(self, collection_id):
+        collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
+
+        if collection:
+            collection.delete()
+
+        if request.args.get('ajax'):
+            return 'success'
+
+        msg = 'Succeed to delete the collection'
+        flash(msg, 'success')
+
+        return redirect(url_for('main.my_collections'))
+
 
 
