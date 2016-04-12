@@ -196,5 +196,31 @@ class CollectionView(MethodView):
 
         return render_template(self.template_name, **data)
 
+class CollectionDetailEditView(MethodView):
+    template_name = 'main/collection_detail_edit.html'
+    decorators = [login_required]
 
+    def get(self, collection_id):
+        collection = models.Collection.objects(id=collection_id, owner=current_user.username).first()
+        if not collection:
+            return 'no collection', 404
+
+        repo_ids = [repo.id for repo in collection.repos]
+        languages = models.GitmarkMeta.objects(key='language').first()
+
+        starred = True
+
+        diff_starred_repos = models.Repo.objects(starred_users=current_user.username, id__nin=repo_ids)
+
+        cur_page = request.args.get('page', 1)
+        cur_language = request.args.get('language')
+
+        diff_starred_repos = diff_starred_repos.filter(language=cur_language) if cur_language else diff_starred_repos
+        diff_starred_repos = diff_starred_repos.paginate(page=int(cur_page), per_page=PER_PAGE)
+
+        url_params = 'language={0}'.format(cur_language) if cur_language else None
+
+        data = { 'diff_starred_repos':diff_starred_repos, 'languages':languages.value_list, 'cur_language':cur_language, 'collection':collection, 'url_params':url_params, 'starred':starred }
+
+        return render_template(self.template_name, **data)
 

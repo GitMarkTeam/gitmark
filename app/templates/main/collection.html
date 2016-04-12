@@ -12,7 +12,7 @@
         
         <div class="row">
             <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-primary"><a href="#"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
+              <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
               <button type="button" class="btn btn-primary"><a href="#"><i class="fa fa-trash"></i> Clear</a></button>
             </div>
         </div>

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+<ol class="breadcrumb">
+  <li><a href="{{ url_for('main.my_collections') }}">Collections</a></li>
+  <li><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">{{ collection.name }}</a></li>
+  <li class="active">edit</li>
+</ol>
+
+<ul class="nav nav-tabs">
+  <li role="presentation" {% if starred %} class="active" {% endif %}><a href="#">Starred Repos</a></li>
+  <li role="presentation"><a href="#">Search</a></li>
+  <li role="presentation"><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}"><i class="fa fa-history"></i></a></li>
+</ul>
+<div class="row">
+  <br>
+  <div class="col-md-8">
+    <form method="POST">
+      {% for repo in diff_starred_repos.items %}
+        <div class="col-md-6">
+          <div class="form-group">
+            <label>
+              <input type="checkbox" name='repos' value={{ repo.id }} > {{ repo.full_name }} <a href="{{ repo.link }}"><i class="fa fa-github"></i></a>
+            </label>
+              
+            
+            <p><small>{{ repo.desc }}</small></p>
+            <p><span class="label label-default"><small>{{ repo.language }}</small></span></p>
+            <hr>
+          </div>
+        </div>
+      {% endfor %}
+
+      <div class="col-md-12">
+        <button class="btn btn-default">Submit</button>
+      </div>
+
+      <div class="col-md-12">
+        {% import '_pagination.html' as pagination %}
+        {{ pagination.render_pagination(diff_starred_repos, url_params) }}
+      </div>
+  
+    </form>
+  </div>
+  <div class="col-md-4">
+    <h4>Languagues</h4><hr>
+    <div class="list-group">
+        {% for language in languages %}
+            {% if cur_language == language %}
+                <a href="?language={{ language }}" class="list-group-item no-border-group-list active">{{ language }} 
+                <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small></a>
+            {% else %}
+                <a href="?language={{ language }}" class="list-group-item no-border-group-list ">{{ language }}</a>
+            {% endif %}
+        {% endfor %}
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+
+{% block js %}
+<script type="text/javascript">
+  $('.rm-filter').on('click', function (event) {
+      location.href = ".";
+      return false;
+    });
+</script>
+{% endblock %}
