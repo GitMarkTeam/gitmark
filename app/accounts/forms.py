@@ -55,9 +55,9 @@ class SuUserForm(Form):
 # ProfileForm = model_form(models.User, exclude=['username', 'password_hash', 'create_time', 'last_login', 
 #     'is_email_confirmed', 'is_superuser', 'role'])
 class ProfileForm(Form):
-    email = StringField('Email', validators=[Required(), Length(1,128), Email()])
+    # email = StringField('Email', validators=[Required(), Length(1,128), Email()])
     display_name = StringField('Display Name', validators=[Length(1,128)])
-    biography = StringField('Biograpyh')
+    biography = StringField('Biography')
     homepage_url = StringField('Homepage', validators=[URL(), Optional()])
     weibo = StringField('Weibo', validators=[URL(), Optional()])
     weixin = StringField('Weixin', validators=[Optional(), URL()])
@@ -70,6 +70,35 @@ class PasswordForm(Form):
     current_password = PasswordField('Current Password', validators=[Required()])
     new_password = PasswordField('New Password', validators=[Required(), EqualTo('password2', message='Passwords must match')])
     password2 = PasswordField('Confirm password', validators=[Required()])
+
+    def validate_current_password(self, field):
+        if not current_user.verify_password(field.data):
+            raise ValidationError('Current password is wrong')
+
+class PasswordForm2(Form):
+    new_password = PasswordField('New Password', validators=[Required(), EqualTo('password2', message='Passwords must match')])
+    password2 = PasswordField('Confirm password', validators=[Required()])
+
+    def validate_current_password(self, field):
+        if not current_user.verify_password(field.data):
+            raise ValidationError('Current password is wrong')
+
+class UsernameForm(Form):
+    username = StringField('Username', validators=[Required(), Length(1,64), 
+        Regexp('^[A-Za-z0-9_.]*$', 0, 'Usernames must have only letters, numbers dots or underscores')])
+    email = StringField('Email', validators=[Required(), Length(1,128), Email()])
+    password = PasswordField('Password', validators=[Required()])
+    
+    def validate_username(self, field):
+        users = models.User.objects(username=field.data)
+        if users.count() > 0 and users[0].id != current_user.id:
+            raise ValidationError('Username already in use')
+
+
+    def validate_email(self, field):
+        users = models.User.objects.filter(email=field.data)
+        if users.count() > 0 and users[0].id != current_user.id:
+            raise ValidationError('Email already in registered')
 
     def validate_current_password(self, field):
         if not current_user.verify_password(field.data):

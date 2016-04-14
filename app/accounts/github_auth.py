@@ -71,6 +71,9 @@ def github_callback():
     if session['oauth_callback_type'] == 'link_github':
         return github_link_account_behavior()
 
+    if session['oauth_callback_type'] == 'reset_password':
+        return github_auth_user_behavior()
+
     url = url_for('main:index')
     return redirect(url)
 
@@ -204,4 +207,16 @@ def github_link_account_behavior(request):
     
     url = reverse('main:admin_index')
     return redirect(url)
+
+def github_auth_user_behavior():
+    url = github_apis.auth_user()
+    auth = OAuth2(client_id=client_id, token=session['oauth_user_token'])
+    res = requests.get(url, auth=auth)
+    if res.status_code != 200:
+        msg = 'GitHub authorization failed'
+        url = url_for('accounts.register')
+        flash(msg, 'danger')
+        return False
+
+    return True
 

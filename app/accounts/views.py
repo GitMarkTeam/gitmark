@@ -8,27 +8,9 @@ from flask.ext.login import login_user, logout_user, login_required, current_use
 from flask.ext.principal import Identity, AnonymousIdentity, identity_changed
 
 from . import models, forms, github_auth
+from main import models as main_models
 from permissions import admin_permission, su_permission
 from gitmark.config import GitmarkSettings
-
-# def login():
-#     form = forms.LoginForm()
-#     if form.validate_on_submit():
-#         try:
-#             user = models.User.objects.get(username=form.username.data)
-#         except models.User.DoesNotExist:
-#             user = None
-
-#         if user and user.verify_password(form.password.data):
-#             login_user(user, form.remember_me.data)
-#             user.last_login = datetime.datetime.now
-#             user.save()
-#             identity_changed.send(current_app._get_current_object(), identity=Identity(user.username))
-#             return redirect(request.args.get('next') or url_for('main.index'))
-
-#         flash('Invalid username or password', 'danger')
-
-#     return render_template('accounts/login.html', form=form)
 
 class LoginView(MethodView):
     template_name = 'accounts/login.html'
@@ -271,7 +253,6 @@ class Profile(MethodView):
 
     def get(self, form=None):
         if not form:
-            # user = get_current_user()
             user = current_user
             user.weibo = user.social_networks['weibo'].get('url')
             user.weixin = user.social_networks['weixin'].get('url')
@@ -288,9 +269,9 @@ class Profile(MethodView):
         if form.validate():
             # user = get_current_user()
             user = current_user
-            if user.email != form.email.data:
-                user.email = form.email.data
-                user.is_email_confirmed = False
+            # if user.email != form.email.data:
+            #     user.email = form.email.data
+            #     user.is_email_confirmed = False
 
             user.display_name = form.display_name.data
             user.biography = form.biography.data
@@ -306,7 +287,7 @@ class Profile(MethodView):
             msg = 'Succeed to update user profile'
             flash(msg, 'success')
 
-            return redirect(url_for('blog_admin.index'))
+            return redirect(url_for('accounts.settings'))
 
         return self.get(form)
 
@@ -314,24 +295,70 @@ class Password(MethodView):
     decorators = [login_required]
     template_name = 'accounts/password.html'
 
-    def get(self, form=None):
-        if not form:
-            form = forms.PasswordForm()
-        data = {'form': form}
+    def get(self, password_form=None, password_form2=None, user_form=None):
+        if not password_form:
+            password_form = forms.PasswordForm()
+        if not password_form2:
+            password_form2 = forms.PasswordForm2()
+        if not user_form:
+            user_form = forms.UsernameForm(obj=current_user)
+        
+        data = {}
+        data['password_form'] = password_form
+        data['password_form2'] = password_form2
+        data['user_form'] = user_form
+
         return render_template(self.template_name, **data)
 
     def post(self):
-        form = forms.PasswordForm(obj=request.form)
-        if form.validate():
-            # if not current_user.verify_password(form.current_password.data):
-            #     return 'current password error', 403 
-            current_user.password = form.new_password.data
-            current_user.save()
-            # return 'waiting to code'
-            msg = 'Succeed to update password'
-            flash(msg, 'success')
+        password_form = None
+        password_form2 = None
+        user_form = None
 
-            return redirect(url_for('accounts.password'))
+        if request.form.get('local'):
+            password_form = forms.PasswordForm(obj=request.form)
+            if password_form.validate():
+                current_user.password = password_form.new_password.data
+                current_user.save()
+                msg = 'Succeed to update password'
+                flash(msg, 'success')
 
-        return self.get(form)
+                return redirect(url_for('accounts.password'))
+
+        if request.form.get('github'):
+            password_form2 = forms.PasswordForm2(obj=request.form)
+            if password_form2.validate():
+                session['oauth_callback_type'] = 'reset_password'
+                verified = github_auth.github_auth()
+                if verified:
+                    current_user.password = password_form2.new_password.data
+                    current_user.save()
+                    msg = 'Succeed to update password'
+                    flash(msg, 'success')
+
+                    return redirect(url_for('accounts.password'))
+
+        if request.form.get('user_form'):
+            user_form = forms.UsernameForm(obj=request.form)
+            if user_form.validate():
+                repos = main_models.Repo.objects(starred_users=current_user.username)
+                repos.update(pop__starred_users=current_user.username)
+                repos.update(push__starred_users=user_form.username.data)
+
+                collections = main_models.Collection.objects(owner=current_user.username)
+                # repos.update(pop__starred_users=current_user.username)
+                collections.update(set__owner=user_form.username.data)
+
+                current_user.username = user_form.username.data
+                if user_form.email.data != current_user.email:
+                    current_user.email = user_form.email.data
+                    current_user.is_email_confirmed = False
+                current_user.save()
+            
+                msg = 'Succeed to update account'
+                flash(msg, 'success')
+
+                return redirect(url_for('accounts.password'))
+
+        return self.get(password_form=password_form, password_form2=password_form2, user_form=user_form)
 
