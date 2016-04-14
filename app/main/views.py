@@ -205,7 +205,7 @@ class CollectionDetailEditView(MethodView):
         if not collection:
             return 'no collection', 404
 
-        repo_ids = [repo.id for repo in collection.repos]
+        repo_ids = [repo['id'] for repo in collection.repos]
         languages = models.GitmarkMeta.objects(key='language').first()
 
         starred = True
@@ -223,4 +223,36 @@ class CollectionDetailEditView(MethodView):
         data = { 'diff_starred_repos':diff_starred_repos, 'languages':languages.value_list, 'cur_language':cur_language, 'collection':collection, 'url_params':url_params, 'starred':starred }
 
         return render_template(self.template_name, **data)
+
+    def post(self, collection_id):
+        collection = models.Collection.objects(id=collection_id, owner=current_user.username).first()
+        if not collection:
+            return 'no collection', 404
+
+        repo_ids = request.form.getlist('repos')
+        repos2collect = models.Repo.objects(id__in=repo_ids)
+
+        repos = [ {'id':repo.id, 'link':repo.link, 'full_name':repo.full_name, 'desc':repo.desc, 'language':repo.language } for repo in repos2collect]
+        print repos
+
+        collection.modify(push_all__repos=repos)
+
+        msg = 'Succeed to add to the collection'
+        flash(msg, 'success')
+
+        return redirect(url_for('main.collection_detail', collection_id=collection_id))
+
+    def delete(self, collection_id):
+        collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
+
+        if collection:
+            collection.modify(pull_all__repos=collection.repos)
+
+        if request.args.get('ajax'):
+            return 'success'
+
+        msg = 'Succeed to clear the collection'
+        flash(msg, 'success')
+
+        return redirect(url_for('main.my_collections'))
 
