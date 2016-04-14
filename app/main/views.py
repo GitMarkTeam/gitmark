@@ -1,3 +1,8 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+from datetime import datetime
+
 from flask import request, redirect, render_template, url_for, abort, flash
 from flask import current_app, make_response
 from flask.views import MethodView
@@ -236,6 +241,7 @@ class CollectionDetailEditView(MethodView):
         print repos
 
         collection.modify(push_all__repos=repos)
+        collection.modify(set__last_update=datetime.now())
 
         msg = 'Succeed to add to the collection'
         flash(msg, 'success')
@@ -247,6 +253,7 @@ class CollectionDetailEditView(MethodView):
 
         if collection:
             collection.modify(pull_all__repos=collection.repos)
+            collection.modify(set__last_update=datetime.now())
 
         if request.args.get('ajax'):
             return 'success'
