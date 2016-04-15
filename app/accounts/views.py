@@ -341,18 +341,21 @@ class Password(MethodView):
         if request.form.get('user_form'):
             user_form = forms.UsernameForm(obj=request.form)
             if user_form.validate():
-                repos = main_models.Repo.objects(starred_users=current_user.username)
-                repos.update(pop__starred_users=current_user.username)
-                repos.update(push__starred_users=user_form.username.data)
+                if current_user.username != user_form.username.data:
+                    # old_name = current_user.username
+                    repos = main_models.Repo.objects(starred_users=current_user.username)
+                    repos.modify(add_to_set__starred_users=user_form.username.data)
+                    repos.modify(pop__starred_users=current_user.username)
 
-                collections = main_models.Collection.objects(owner=current_user.username)
-                # repos.update(pop__starred_users=current_user.username)
-                collections.update(set__owner=user_form.username.data)
+                    collections = main_models.Collection.objects(owner=current_user.username)
+                    collections.modify(set__owner=user_form.username.data)
 
-                current_user.username = user_form.username.data
+                    current_user.username = user_form.username.data
+                
                 if user_form.email.data != current_user.email:
                     current_user.email = user_form.email.data
                     current_user.is_email_confirmed = False
+                
                 current_user.save()
             
                 msg = 'Succeed to update account'
