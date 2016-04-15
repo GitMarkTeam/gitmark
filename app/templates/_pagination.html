@@ -23,7 +23,8 @@
             <li class="disabled"><a href="?page={{ page }}{%if url_params %}&{{ url_params }}{% endif %}"><strong>{{ page }}</strong></a></li>
           {% endif %}
         {% else %}
-          <span class=ellipsis>…</span>
+          <!-- <span class=ellipsis>…</span> -->
+          <li class="disabled"><a href="#">...</a></li>
         {% endif %}
       {%- endfor %}
 
