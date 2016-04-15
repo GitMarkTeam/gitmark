@@ -263,3 +263,40 @@ class CollectionDetailEditView(MethodView):
 
         return redirect(url_for('main.my_collections'))
 
+
+class ReposView(MethodView):
+    decorators = [login_required, ]
+    template_name = 'main/repos.html'
+
+    def get(self):
+        repos = models.Repo.objects().all()
+        languages = models.GitmarkMeta.objects(key='language').first()
+
+        cur_page = request.args.get('page', 1)
+        cur_language = request.args.get('language')
+
+        repos = repos.filter(language=cur_language) if cur_language else repos
+        url_params = 'language={0}'.format(cur_language) if cur_language else None
+
+        repos = repos.paginate(page=int(cur_page), per_page=PER_PAGE)
+
+        #group by aggregate
+        language_cursor = models.Repo._get_collection().aggregate([
+                {
+                    '$match': {'starred_users': current_user.username}
+                },
+                { '$group' : 
+                    { '_id' : {'language' : '$language' }, 
+                      'name' : { '$first' : '$language' },
+                      'count' : { '$sum' : 1 },
+                    }
+                }
+            ])
+
+        data = { 'repos':repos, 'languages':languages.value_list, 'cur_language':cur_language, 
+            'url_params':url_params }
+
+        data['language_cursor'] = language_cursor
+         
+        return render_template(self.template_name, **data)
+
