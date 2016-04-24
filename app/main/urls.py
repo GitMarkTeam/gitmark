@@ -15,3 +15,4 @@ main.add_url_rule('/user/collections/', view_func=views.MyCollectionsView.as_vie
 main.add_url_rule('/user/collections/<collection_id>/edit/', view_func=views.MyCollectionEditView.as_view('edit_collection'))
 main.add_url_rule('/user/collections/<collection_id>/detail/', view_func=views.CollectionView.as_view('collection_detail'))
 main.add_url_rule('/user/collections/<collection_id>/detail/edit/', view_func=views.CollectionDetailEditView.as_view('collection_detail_edit'))
+main.add_url_rule('/user/collections/<collection_id>/detail/edit/search', view_func=views.Search4Collection.as_view('collection_detail_edit_search'))

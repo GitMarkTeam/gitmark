@@ -9,8 +9,8 @@
 </ol>
 
 <ul class="nav nav-tabs">
-  <li role="presentation" {% if starred %} class="active" {% endif %}><a href="#">Starred Repos</a></li>
-  <li role="presentation"><a href="#">Search</a></li>
+  <li role="presentation" class="active"><a href="#">Starred Repos</a></li>
+  <li role="presentation"><a href="{{ url_for('main.collection_detail_edit_search', collection_id=collection.id) }}">Search</a></li>
   <li role="presentation"><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}"><i class="fa fa-history"></i></a></li>
 </ul>
 <div class="row">

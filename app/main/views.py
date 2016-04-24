@@ -8,6 +8,7 @@ from flask import current_app, make_response
 from flask.views import MethodView
 
 from flask.ext.login import login_required, current_user
+from mongoengine.queryset.visitor import Q
 
 from . import models, tasks, forms
 from gitmark.config import GitmarkSettings
@@ -266,7 +267,6 @@ class CollectionDetailEditView(MethodView):
 
     def delete(self, collection_id):
         collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
-
         if not collection:
             return 'No collection found', 404
 
@@ -287,6 +287,46 @@ class CollectionDetailEditView(MethodView):
 
         return redirect(url_for('main.my_collections'))
 
+class Search4Collection(MethodView):
+    decorators = [login_required]
+    template_name = 'main/collection_search.html'
+
+    def get(self, collection_id):
+        data = {}
+        collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
+        if not collection:
+            return 'No collection found', 404
+        data['collection'] = collection
+
+        repo_ids = [repo['id'] for repo in collection.repos]
+        repos = models.Repo.objects(id__nin=repo_ids)
+
+        keyword = request.args.get('keyword')
+        flag = request.args.get('flag')
+        data['keyword'] = keyword
+        data['flag'] = flag
+        if flag:
+            url_parm = '?keyword={0}&flag={1}'.format(keyword, flag)
+            data['url_parm'] = url_parm
+
+        if flag == 'repo':
+            repos = repos.filter(name__icontains=keyword)
+        elif flag == 'description':
+            repos = repos.filter(desc__icontains=keyword)
+        elif flag == 'author':
+            repos = repos.filter(author__icontains=keyword)
+        elif flag == 'all':
+            repos = repos.filter(Q(name__icontains=keyword)|Q(desc__icontains=keyword)|Q(author__icontains=keyword))
+
+        try:
+            cur_page = int(request.args.get('page', 1))
+        except:
+            return 'page error', 404
+
+        repos = repos.paginate(page=cur_page, per_page=PER_PAGE)
+        data['repos'] = repos
+        
+        return render_template(self.template_name, **data)
 
 class ReposView(MethodView):
     decorators = [login_required, ]
