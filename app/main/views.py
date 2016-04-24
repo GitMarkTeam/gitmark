@@ -196,10 +196,27 @@ class CollectionView(MethodView):
         data = {'cur_collection': collection, 'collections':None}
 
         if collection.owner == current_user.username:
-            collections = collections = models.Collection.objects(owner=current_user.username)
+            collections = models.Collection.objects(owner=current_user.username)
             data['collections'] = collections
 
         return render_template(self.template_name, **data)
+
+    def delete(self, collection_id):
+        collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
+
+        if not collection:
+            return 'No collection found', 404
+
+        collection.modify(pull_all__repos=collection.repos)
+        collection.modify(set__last_update=datetime.now())
+
+        if request.args.get('ajax'):
+            return 'success'
+
+        msg = 'Succeed to clear the collection'
+        flash(msg, 'success')
+
+        return redirect(url_for('main.my_collections'))
 
 class CollectionDetailEditView(MethodView):
     template_name = 'main/collection_detail_edit.html'
@@ -238,7 +255,6 @@ class CollectionDetailEditView(MethodView):
         repos2collect = models.Repo.objects(id__in=repo_ids)
 
         repos = [ {'id':repo.id, 'link':repo.link, 'full_name':repo.full_name, 'desc':repo.desc, 'language':repo.language } for repo in repos2collect]
-        print repos
 
         collection.modify(push_all__repos=repos)
         collection.modify(set__last_update=datetime.now())
@@ -251,9 +267,17 @@ class CollectionDetailEditView(MethodView):
     def delete(self, collection_id):
         collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
 
-        if collection:
-            collection.modify(pull_all__repos=collection.repos)
-            collection.modify(set__last_update=datetime.now())
+        if not collection:
+            return 'No collection found', 404
+
+        full_name = request.args.get('full_name')
+        repos = collection.repos
+        filtered_repos = filter(lambda x:x['full_name']==full_name, repos)
+        
+        try:
+            collection.modify(pull__repos=filtered_repos[0])
+        except:
+            pass
 
         if request.args.get('ajax'):
             return 'success'

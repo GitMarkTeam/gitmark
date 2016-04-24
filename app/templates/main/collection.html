@@ -13,7 +13,7 @@
         <div class="row">
             <div class="btn-group" role="group" aria-label="...">
               <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
-              <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}" class="clear"><i class="fa fa-trash"></i> Clear</a></button>
+              <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail', collection_id=cur_collection.id) }}" class="clear"><i class="fa fa-trash"></i> Clear</a></button>
             </div>
         </div>
         <div class="row">
@@ -24,7 +24,7 @@
                 <p>
                     <span class="label label-default"><small>{{repo.get('language')}}</small></span> &nbsp;
                     <i class="fa fa-star"></i> &nbsp;
-                    <i class="fa fa-trash"></i>
+                    <a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}?rm-repo=true&full_name={{repo.get('full_name')}}" class="rm-repo"><i class="fa fa-trash"></i></a>
                 </p>
                 <hr>
             </div>
@@ -82,7 +82,25 @@
     });
     return false;
 
-  })
+  });
+
+    $('.rm-repo').click(function() {
+        var url = $(this).attr('href') + '&ajax=true';
+        bootbox.confirm("Are you sure?", function(result){
+            if(result){
+                $.ajax({
+                    url: url,
+                    type: 'DELETE',
+                    success: function(result){
+                        location.reload();
+                    }
+                })
+            }
+        });
+
+
+        return false;
+    })
 
 </script>
 {% endblock %}

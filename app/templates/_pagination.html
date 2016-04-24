@@ -3,7 +3,7 @@
     <ul class="pagination">
       {% if not pagination.has_prev %}
         <li class="disabled">
-          <a href="?page={{ pagination.pre_num }}{%if url_params %}&{{ url_params }}{% endif %}" aria-label="Previous">
+          <a href="?page=1{%if url_params %}&{{ url_params }}{% endif %}" aria-label="Previous">
             <span aria-hidden="true">&laquo;</span>
           </a>
         </li>
