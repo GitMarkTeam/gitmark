@@ -328,6 +328,10 @@ class Search4Collection(MethodView):
         
         return render_template(self.template_name, **data)
 
+    def post(self, collection_id):
+        instance = CollectionDetailEditView()
+        return instance.post(collection_id)
+
 class ReposView(MethodView):
     decorators = [login_required, ]
     template_name = 'main/repos.html'
