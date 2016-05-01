@@ -33,19 +33,19 @@
 
         <h4>Social Network</h4>
             {% if current_user.social_networks['twitter']['url'] %}
-                <a href='{{ current_user.social_networks["twitter"]["url"] }}'><i class="fa fa-twitter fa-lg"></i></a>
+                <a href='{{ current_user.social_networks["twitter"]["url"] }}'><i class="fa fa-twitter fa-lg"></i></a> &nbsp;
             {% endif %}
             {% if current_user.social_networks['weibo']['url'] %}
-                <a href='{{ current_user.social_networks["weibo"]["url"] }}'><i class="fa fa-weibo fa-lg"></i></a>
+                <a href='{{ current_user.social_networks["weibo"]["url"] }}'><i class="fa fa-weibo fa-lg"></i></a> &nbsp;
             {% endif %}
             {% if current_user.social_networks['facebook']['url'] %}
-                <a href='{{ current_user.social_networks["facebook"]["url"] }}'><i class="fa fa-facebook fa-lg"></i></a>
+                <a href='{{ current_user.social_networks["facebook"]["url"] }}'><i class="fa fa-facebook fa-lg"></i></a> &nbsp;
             {% endif %}
             {% if current_user.social_networks['linkedin']['url'] %}
-                <a href='{{ current_user.social_networks["linkedin"]["url"] }}'><i class="fa fa-linkedin fa-lg"></i></a>
+                <a href='{{ current_user.social_networks["linkedin"]["url"] }}'><i class="fa fa-linkedin fa-lg"></i></a> &nbsp;
             {% endif %}
             {% if current_user.social_networks['weixin']['url'] %}
-                <a id="btn_weixin" href='{{ current_user.social_networks["weixin"]["url"] }}'><i class="fa fa-weixin fa-lg"></i></a>
+                <a id="btn_weixin" href='{{ current_user.social_networks["weixin"]["url"] }}'><i class="fa fa-weixin fa-lg"></i></a> &nbsp;
                 <!-- weixin -->
                 <div id="weixin" class="hidden">
                     <br>
@@ -55,11 +55,13 @@
 
         <hr>
 
+        {% if current_user.homepage_url %}
         <h4>Homepage</h4>
             {% if current_user.homepage_url %}
             <a href="{{ current_user.homepage_url }}"><i class="fa fa-home fa-lg"></i></a> {{ current_user.homepage_url }}
             {% endif %}
         <hr>
+        {% endif %}
 
         <div class="row" style="text-align:center">
             <div class='col-md-3'>
@@ -119,4 +121,17 @@
 
 
 {% block js %}
+
+<script type="text/javascript">
+    $('#btn_weixin').on('click', function(event){
+        if($('#weixin').hasClass('hidden'))
+            $('#weixin').removeClass('hidden');
+        else
+            $('#weixin').addClass('hidden');
+        return false
+    })
+    
+    
+</script>
+
 {% endblock %}
