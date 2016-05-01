@@ -71,11 +71,11 @@
                 <small>follower</small>
             </div>
             <div class='col-md-3'>
-                <a href="{{ url_for('main.starred_repos')}}"><p class="lead">{{ starred_count }}</p></a>
+                <a href="{{ url_for('main.starred_repos')}}"><p class="lead">{{ starred_repos | count }}</p></a>
                 <small>starred</small>
             </div>
             <div class='col-md-3'>
-                <a href="{{ url_for('main.my_collections') }}"><p class="lead">{{ collection_count }}</p></a>
+                <a href="{{ url_for('main.my_collections') }}"><p class="lead">{{ collections | length }}</p></a>
                 <small>collection</small>
             </div>
         </div>
@@ -83,10 +83,35 @@
     </div>
     <div class="col-md-4">
         <h3>Recently Starred</h3><hr>
+        <div class="">
+            {% for starred_repo in starred_repos[:5] %}
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="lead"><a href="{{ starred_repo.link }}">{{ starred_repo.full_name}}</a></p>
+                    <p>{{ starred_repo.desc}}</p>
+                    <p><span class="label label-default"><small>{{ starred_repo.language }}</small></span></p>
+                </div>
+            </div>
+        {% endfor %}
+        <br>
+        {% if starred_repos.count() > 5%}<a href="{{ url_for('main.starred_repos')}}">See All</a>{% endif %}
+        </div>
+        
         
     </div>
     <div class="col-md-3">
         <h3>Collections</h3><hr>
+        {% for collection in collections[:5] %}
+            <div class="row">
+                <div class="col-md-12">
+                    <p class="lead"><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">{{ collection.name }}</a></p>
+                    <p>{{ collection.description}}</p>
+                </div>
+            </div>
+
+        {% endfor %}
+
+        {% if collections.count() > 5%}<a href="{{ url_for('main.my_collections') }}">See All</a>{% endif %}
         
     </div>
 </div>

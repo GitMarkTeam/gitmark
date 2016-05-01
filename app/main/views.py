@@ -53,7 +53,18 @@ class IndexView(MethodView):
     template_name = 'main/index.html'
 
     def get(self):
-        return render_template(self.template_name)
+        data = {}
+        starred_repos = models.Repo.objects(starred_users=current_user.username)
+        collections = models.Collection.objects(owner=current_user.username)
+
+        data['starred_repos'] = starred_repos
+        data['collections'] = collections
+
+
+        # starred_repos_count = starred_repos.count()
+        # collections_count = 
+
+        return render_template(self.template_name, **data)
 
     def post(self):
         if request.form.get('link_github'):
