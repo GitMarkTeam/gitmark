@@ -59,10 +59,11 @@ class ProfileForm(Form):
     display_name = StringField('Display Name', validators=[Length(1,128)])
     biography = StringField('Biography')
     homepage_url = StringField('Homepage', validators=[URL(), Optional()])
+    avatar_url = StringField('Avatar', validators=[URL(), Optional()])
     weibo = StringField('Weibo', validators=[URL(), Optional()])
     weixin = StringField('Weixin', validators=[Optional(), URL()])
     twitter = StringField('Twitter', validators=[URL(), Optional()])
-    github = StringField('github', validators=[URL(), Optional()])
+    # github = StringField('github', validators=[URL(), Optional()])
     facebook = StringField('Facebook', validators=[URL(), Optional()])
     linkedin = StringField('Linkedin', validators=[URL(), Optional()])
 

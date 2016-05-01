@@ -257,7 +257,7 @@ class Profile(MethodView):
             user.weibo = user.social_networks['weibo'].get('url')
             user.weixin = user.social_networks['weixin'].get('url')
             user.twitter = user.social_networks['twitter'].get('url')
-            user.github = user.social_networks['github'].get('url')
+            # user.github = user.social_networks['github'].get('url')
             user.facebook = user.social_networks['facebook'].get('url')
             user.linkedin = user.social_networks['linkedin'].get('url')
             form = forms.ProfileForm(obj=user)
@@ -276,10 +276,11 @@ class Profile(MethodView):
             user.display_name = form.display_name.data
             user.biography = form.biography.data
             user.homepage_url = form.homepage_url.data or None
+            user.avatar_url = form.avatar_url.data or None
             user.social_networks['weibo']['url'] = form.weibo.data or None
             user.social_networks['weixin']['url'] = form.weixin.data or None
             user.social_networks['twitter']['url'] = form.twitter.data or None
-            user.social_networks['github']['url'] = form.github.data or None
+            # user.social_networks['github']['url'] = form.github.data or None
             user.social_networks['facebook']['url'] = form.facebook.data or None
             user.social_networks['linkedin']['url'] = form.linkedin.data or None
             user.save()

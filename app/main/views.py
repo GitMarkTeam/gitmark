@@ -3,7 +3,7 @@
 
 from datetime import datetime
 
-from flask import request, redirect, render_template, url_for, abort, flash
+from flask import request, redirect, render_template, url_for, abort, flash, session
 from flask import current_app, make_response
 from flask.views import MethodView
 
@@ -12,15 +12,13 @@ from mongoengine.queryset.visitor import Q
 
 from . import models, tasks, forms
 from gitmark.config import GitmarkSettings
+from accounts import github_auth
 
 PER_PAGE = GitmarkSettings['pagination']['per_page']
 
 def hello():
     return 'hello, world'
 
-def index():
-    # return 'index'
-    return render_template('main/index.html')
 
 def test_celery():
     tasks.test_celery.delay()
@@ -49,6 +47,26 @@ def test():
         return 'None'
     return str(obj.value_list)
     return 'true'
+
+class IndexView(MethodView):
+    decorators = [login_required, ]
+    template_name = 'main/index.html'
+
+    def get(self):
+        return render_template(self.template_name)
+
+    def post(self):
+        if request.form.get('link_github'):
+            session['oauth_callback_type'] = 'link_github'           
+            return github_auth.github_auth()
+        
+        elif request.form.get('rm_github'):
+            current_user.github_username = ''
+            # current_user.github = ''
+            current_user.save()
+
+        
+        return redirect(url_for('main.index')) 
 
 class StarredRepoView(MethodView):
     decorators = [login_required, ]

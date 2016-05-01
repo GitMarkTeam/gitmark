@@ -22,6 +22,8 @@ def qiniu_fetch_img(img_url, img_name):
 
     key = ret.get('key')
     return QINIU_URL + key
+    # print dir(qiniu)
+    # return 'aa'
 
 
 

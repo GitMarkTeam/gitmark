@@ -12,7 +12,7 @@ SOCIAL_NETWORKS = {
     'weibo': {'fa_icon': 'fa fa-weibo', 'url': None},
     'weixin': {'fa_icon': 'fa fa-weixin', 'url': None},
     'twitter': {'fa_icon': 'fa fa fa-twitter', 'url': None},
-    'github': {'fa_icon': 'fa fa-github', 'url': None},
+    # 'github': {'fa_icon': 'fa fa-github', 'url': None},
     'facebook': {'fa_icon': 'fa fa-facebook', 'url': None},
     'linkedin': {'fa_icon': 'fa fa-linkedin', 'url': None},
 }
@@ -29,10 +29,11 @@ class User(UserMixin, db.Document):
     role = db.StringField(max_length=32, default='general', choices=ROLES)
     display_name = db.StringField(max_length=255, default='Anonymous')
     github_username = db.StringField(max_length=255)
-    github_url = db.URLField()
+    github = db.URLField()
     biography = db.StringField()
     social_networks = db.DictField(default=SOCIAL_NETWORKS)
     homepage_url = db.URLField()
+    avatar_url = db.URLField()
 
     @property
     def password(self):

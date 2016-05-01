@@ -11,14 +11,14 @@ import os, datetime
 # from django.contrib import messages
 # from django.conf import settings
 from flask import render_template, redirect, request, flash, url_for, current_app, session
-from flask.ext.login import login_user
+from flask.ext.login import login_user, current_user
 
 import requests
 from requests_oauthlib import OAuth2Session, OAuth2
 
 from gitmark import github_apis, config
 from gitmark.config import GitmarkSettings
-from utils.qiniu import qiniu_fetch_img
+from utils.wrap_qiniu import qiniu_fetch_img
 from . import models
 
 client_id = GitmarkSettings['github']['client_id']
@@ -134,8 +134,8 @@ def github_register_behavior():
 
     #     return user
 
-    # avatar_name = 'github_avatar_{0}.jpeg'.format(username)
-    # avatar_url = qiniu_fetch_img(github_avatar_url, avatar_name)
+    avatar_name = 'github_avatar_{0}.jpeg'.format(username)
+    avatar_url = qiniu_fetch_img(github_avatar_url, avatar_name)
     checked_username = get_unique_username(username)
 
     user = models.User()
@@ -145,7 +145,7 @@ def github_register_behavior():
     user.github_username = username
     user.github = github_url
     user.is_email_confirmed = True
-    user.avatar = github_avatar_url
+    user.avatar_url = avatar_url
     user.save()
 
     login_user(user)
@@ -171,7 +171,12 @@ def github_login_behavior():
     # github_url = github_user.get('html_url')
     # github_avatar_url = github_user.get('avatar_url')
 
-    user = models.User.objects.get(github_username=username)
+    try:
+        user = models.User.objects.get(github_username=username)
+    except models.User.DoesNotExist:
+        msg = 'Please register first'
+        flash(msg, 'danger')
+        return redirect(url_for('accounts.register'))
 
     login_user(user)
     user.last_login = datetime.datetime.now
@@ -180,15 +185,14 @@ def github_login_behavior():
     url = url_for('accounts.login')
     return redirect(url)
 
-def github_link_account_behavior(request):
+def github_link_account_behavior():
     url = github_apis.auth_user()
-    auth = OAuth2(client_id=client_id, token=request.session['oauth_user_token'])
+    auth = OAuth2(client_id=client_id, token=session['oauth_user_token'])
     res = requests.get(url, auth=auth)
     if res.status_code != 200:
         msg = 'GitHub authorization failed'
-        url = reverse('accounts:register')
-        messages.add_message(request, messages.ERROR, msg)
-        return redirect(url)
+        flash(msg, 'danger')
+        return redirect(url_for('main.index'))
 
     github_user = res.json()
     username = github_user.get('login')
@@ -196,17 +200,17 @@ def github_link_account_behavior(request):
     github_url = github_user.get('html_url')
     github_avatar_url = github_user.get('avatar_url')
 
-    avatar_name = 'github_avatar_{0}.jpeg'.format(username)
-    avatar_url = qiniu_fetch_img(github_avatar_url, avatar_name)
+    if not current_user.avatar_url:
+        avatar_name = 'github_avatar_{0}.jpeg'.format(username)
+        avatar_url = qiniu_fetch_img(github_avatar_url, avatar_name)
+        current_user.avatar_url = avatar_url
 
-    account = request.user.account
-    account.github_username = username
-    account.github = github_url
-    account.avatar = avatar_url
-    account.save()
+    current_user.github_username = username
+    current_user.github = github_url
     
-    url = reverse('main:admin_index')
-    return redirect(url)
+    current_user.save()
+
+    return redirect(url_for('main.index'))
 
 def github_auth_user_behavior():
     url = github_apis.auth_user()

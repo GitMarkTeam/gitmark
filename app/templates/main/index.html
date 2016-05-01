@@ -1,2 +1,97 @@
 {% extends 'base.html' %}
 {% block title %}Home{% endblock %}
+
+{% block main %}
+<div class="row">
+    <div class="col-md-3 col-md-offset-1">
+        <h3>Account</h3><hr>
+        <img src="{{ current_user.avatar_url }}" width="80%" class="img-rounded">
+        <br><br><br>
+        <!-- <h4>Username</h4> -->
+
+        <span class="fa-stack">
+            <!-- <i class="fa fa-circle fa-stack-2x"></i> -->
+            <i class="fa fa-user fa-lg"></i>
+        </span>
+        {{ current_user.username }}
+        <br>
+
+        <!-- <h4>GitHub Account</h4> -->
+        <form method="POST">
+            <p> 
+            {% if current_user.github_username %}
+            <span class="fa-stack">
+                <i class="fa fa-github fa-lg"></i>
+            </span><a href="{{ current_user.github }}">{{ current_user.github_username }}</a> &nbsp;| 
+                <button type="submit" class="btn btn-link" name="rm_github" value='true'>  <i class="fa fa-trash-o"></i></button>
+            {% else %}
+                <button type="submit" class="btn btn-success" name="link_github" value='true'> Link to <i class="fa fa-github"></i></button>
+            {% endif %}
+            </p>
+        </form>
+        <hr>
+
+        <h4>Social Network</h4>
+            {% if current_user.social_networks['twitter']['url'] %}
+                <a href='{{ current_user.social_networks["twitter"]["url"] }}'><i class="fa fa-twitter fa-lg"></i></a>
+            {% endif %}
+            {% if current_user.social_networks['weibo']['url'] %}
+                <a href='{{ current_user.social_networks["weibo"]["url"] }}'><i class="fa fa-weibo fa-lg"></i></a>
+            {% endif %}
+            {% if current_user.social_networks['facebook']['url'] %}
+                <a href='{{ current_user.social_networks["facebook"]["url"] }}'><i class="fa fa-facebook fa-lg"></i></a>
+            {% endif %}
+            {% if current_user.social_networks['linkedin']['url'] %}
+                <a href='{{ current_user.social_networks["linkedin"]["url"] }}'><i class="fa fa-linkedin fa-lg"></i></a>
+            {% endif %}
+            {% if current_user.social_networks['weixin']['url'] %}
+                <a id="btn_weixin" href='{{ current_user.social_networks["weixin"]["url"] }}'><i class="fa fa-weixin fa-lg"></i></a>
+                <!-- weixin -->
+                <div id="weixin" class="hidden">
+                    <br>
+                    <img src="{{ current_user.social_networks["weixin"]["url"] }}?imageView/2/w/150" title="weixin">
+                </div> 
+            {% endif %}                
+
+        <hr>
+
+        <h4>Homepage</h4>
+            {% if current_user.homepage_url %}
+            <a href="{{ current_user.homepage_url }}"><i class="fa fa-home fa-lg"></i></a> {{ current_user.homepage_url }}
+            {% endif %}
+        <hr>
+
+        <div class="row" style="text-align:center">
+            <div class='col-md-3'>
+                <p class="lead">2048</p>
+                <small>following</small>
+            </div>
+            <div class='col-md-3'>
+                <p class="lead">2048</p>
+                <small>follower</small>
+            </div>
+            <div class='col-md-3'>
+                <a href="{{ url_for('main.starred_repos')}}"><p class="lead">{{ starred_count }}</p></a>
+                <small>starred</small>
+            </div>
+            <div class='col-md-3'>
+                <a href="{{ url_for('main.my_collections') }}"><p class="lead">{{ collection_count }}</p></a>
+                <small>collection</small>
+            </div>
+        </div>
+        
+    </div>
+    <div class="col-md-4">
+        <h3>Recently Starred</h3><hr>
+        
+    </div>
+    <div class="col-md-3">
+        <h3>Collections</h3><hr>
+        
+    </div>
+</div>
+{% endblock %}
+
+
+{% block js %}
+{% endblock %}
