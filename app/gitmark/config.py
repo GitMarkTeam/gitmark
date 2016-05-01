@@ -51,27 +51,18 @@ GitmarkSettings = {
         
 }
 
-# CeleryConfig = {
-#     'CELERY_BROKER_URL': 'redis://localhost:6379/0',
-#     'CELERY_RESULT_BACKEND': 'redis://localhost:6379/1',
-#     'CELERY_TASK_SERIALIZER': 'json',
-#     'CELERY_RESULT_SERIALIZER': 'json',
-#     'CELERY_ACCEPT_CONTENT':['json'],
-#     'CELERY_TIMEZONE': 'Asia/Shanghai',
-#     'CELERY_ENABLE_UTC': True,
-#     'CELERY_IGNORE_RESULT': False,
-# }
 
-class CeleryConfig(object):
-    BROKER_URL = 'redis://localhost:6379/0'
-    CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
-    CELERY_TASK_SERIALIZER = 'json'
-    CELERY_RESULT_SERIALIZER = 'json'
-    CELERY_ACCEPT_CONTENT=['json']
-    CELERY_TIMEZONE = 'Asia/Shanghai'
-    CELERY_ENABLE_UTC = True
-    CELERY_IGNORE_RESULT = False
-    CELERY_IMPORTS = ('main.tasks')
+
+# class CeleryConfig(object):
+#     BROKER_URL = 'redis://localhost:6379/0'
+#     CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+#     CELERY_TASK_SERIALIZER = 'json'
+#     CELERY_RESULT_SERIALIZER = 'json'
+#     CELERY_ACCEPT_CONTENT=['json']
+#     CELERY_TIMEZONE = 'Asia/Shanghai'
+#     CELERY_ENABLE_UTC = True
+#     CELERY_IGNORE_RESULT = False
+#     CELERY_IMPORTS = ('main.tasks')
 
 class Config(object):
     BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
@@ -113,6 +104,15 @@ class PrdConfig(Config):
             'host': os.environ.get('MONGO_HOST') or 'localhost',
             # 'port': 12345
         }
+
+    # BROKER_URL = 'redis://localhost:6379/0'
+    # CELERY_RESULT_BACKEND = 'redis://localhost:6379/1'
+
+    # BROKER_URL = 'redis://:{password}@{hostname}:{port}/0'.format(password=os.environ['REDIS_PASSWORD'], hostname=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'])
+    # CELERY_RESULT_BACKEND = 'redis://:{password}@{hostname}:{port}/1'.format(password=os.environ['REDIS_PASSWORD'], hostname=os.environ['REDIS_PORT_6379_TCP_ADDR'], port=os.environ['REDIS_PORT_6379_TCP_PORT'])
+
+    BROKER_URL = os.environ.get('BROKER_URL') or 'redis://redis:6379/0'
+    CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND') or 'redis://redis:6379/1'
 
 
 config = {
