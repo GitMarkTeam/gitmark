@@ -1,0 +1,26 @@
+gitmark:
+  # restart: always
+  build: ./app
+  # image: gevin/octblog:0.2.4.2
+  ports:
+    - "8000:8000"
+    - "5000:5000"
+  links:
+    - mongo:mongo
+  # volumes:
+  #   - /usr/src/app/static
+  env_file: .env
+
+mongo:
+  # restart: always
+  image: mongo:latest
+  env_file: .env
+
+  volumes:
+    - /mongo/data
+
+redis:
+  # restart: always
+  image: redis:3.0
+  ports:
+    - "6379:6379"
