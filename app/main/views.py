@@ -85,7 +85,12 @@ class StarredRepoView(MethodView):
 
     def get(self):
         repos = models.Repo.objects(starred_users=current_user.username)
-        languages = models.GitmarkMeta.objects(key='language').first()
+        # languages = models.GitmarkMeta.objects(key='language').first()
+        try:
+            languages = models.GitmarkMeta.objects.get(key='language')
+        except models.GitmarkMeta.DoesNotExist:
+            languages = models.GitmarkMeta(key='languages')
+            languages.save()
 
         cur_page = request.args.get('page', 1)
         cur_language = request.args.get('language')

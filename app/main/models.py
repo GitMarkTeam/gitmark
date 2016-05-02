@@ -61,7 +61,9 @@ from gitmark import db
 
 class GitmarkMeta(db.Document):
     key = db.StringField(max_length=64)
+    value = db.StringField()
     value_list = db.ListField(db.StringField())
+    value_dict = db.DictField()
 
 class Repo(db.Document):
     name = db.StringField(max_length=128)
