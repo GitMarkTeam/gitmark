@@ -7,6 +7,7 @@ gitmark:
     - "5000:5000"
   links:
     - mongo:mongo
+    - redis:redis
   # volumes:
   #   - /usr/src/app/static
   env_file: .env
