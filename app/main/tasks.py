@@ -84,6 +84,8 @@ def import_github_repos(github_username, gitmark_username=None):
     # GitHub API rate limit exceeded 
     if not isinstance(starred_repos, list):
         print 'GitHub API rate limit exceeded '
+        print res.status_code
+        print res.text
         return
 
     while len(starred_repos) > 0:

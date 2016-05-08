@@ -4,9 +4,9 @@
 # Dockerizing Ubuntu: Dockerfile for building Ubuntu images
 FROM       ubuntu:14.04
 MAINTAINER Gevin <flyhigher139@gmail.com>
-# ADD sources.list /etc/apt/sources.list
+ADD sources.list /etc/apt/sources.list
 RUN apt-get update && apt-get install -y curl wget tar vim && \
-    apt-get install -y nginx git build-essential python-dev python-pip && \
+    apt-get install -y nginx git build-essential python-dev python-pip redis-server && \
     apt-get clean all
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 # RUN pip install supervisor uwsgi -i http://pypi.douban.com/simple
