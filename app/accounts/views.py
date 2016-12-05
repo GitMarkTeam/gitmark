@@ -4,8 +4,8 @@
 import datetime
 from flask import render_template, redirect, request, flash, url_for, current_app, session
 from flask.views import MethodView
-from flask.ext.login import login_user, logout_user, login_required, current_user
-from flask.ext.principal import Identity, AnonymousIdentity, identity_changed
+from flask_login import login_user, logout_user, login_required, current_user
+from flask_principal import Identity, AnonymousIdentity, identity_changed
 
 from . import models, forms, github_auth
 from main import models as main_models

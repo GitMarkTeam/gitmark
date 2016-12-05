@@ -3,7 +3,7 @@
 import os, sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__)))
 
-from flask.ext.script import Manager, Server
+from flask_script import Manager, Server
 
 from gitmark import GitmarkApp, create_app, register_blueprint
 
