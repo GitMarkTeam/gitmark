@@ -7,7 +7,7 @@ from flask import request, redirect, render_template, url_for, abort, flash, ses
 from flask import current_app, make_response
 from flask.views import MethodView
 
-from flask.ext.login import login_required, current_user
+from flask_login import login_required, current_user
 from mongoengine.queryset.visitor import Q
 
 from . import models, tasks, forms
