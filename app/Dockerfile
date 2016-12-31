@@ -9,7 +9,7 @@ RUN apt-get update && apt-get install -y curl wget tar vim && \
     apt-get install -y nginx git build-essential python-dev python-pip redis-server && \
     apt-get clean all
 RUN echo "daemon off;" >> /etc/nginx/nginx.conf
-# RUN pip install supervisor uwsgi -i http://pypi.douban.com/simple
+# COPY pip.conf /root/.pip/pip.conf
 RUN pip install supervisor gunicorn
 ADD supervisord.conf /etc/supervisord.conf
 RUN mkdir -p /etc/supervisor.conf.d && \
