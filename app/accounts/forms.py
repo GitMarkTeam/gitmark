@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SelectField, ValidationError
 from wtforms.validators import Required, Length, Email, Regexp, EqualTo, URL, Optional
 from flask_login import current_user
@@ -9,12 +9,12 @@ from flask_mongoengine.wtf import model_form
 
 from . import models
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
     username = StringField()
     password = PasswordField()
     remember_me = BooleanField('Keep me logged in')
 
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[Required(), Length(1,64), 
         Regexp('^[A-Za-z0-9_.]*$', 0, 'Usernames must have only letters, numbers dots or underscores')])
     email = StringField('Email', validators=[Required(), Length(1,128), Email()])
@@ -29,7 +29,7 @@ class RegistrationForm(Form):
         if models.User.objects.filter(email=field.data).count() > 0:
             raise ValidationError('Email already in registered')
 
-class UserForm(Form):
+class UserForm(FlaskForm):
     email = StringField('Email', validators=[Required(), Length(1,128), Email()])
     # is_active = BooleanField('Is activie')
     # is_superuser = BooleanField('Is superuser')
@@ -37,7 +37,7 @@ class UserForm(Form):
 
 # SuUserForm = model_form(models.User, exclude=['create_time', 'last_login', 'password_hash'])
 
-class SuUserForm(Form):
+class SuUserForm(FlaskForm):
     email = StringField('Email', validators=[Required(), Length(1,128), Email()])
     is_superuser = BooleanField('Is superuser')
     is_email_confirmed = BooleanField('Is Email Confirmed') 
@@ -54,7 +54,7 @@ class SuUserForm(Form):
 
 # ProfileForm = model_form(models.User, exclude=['username', 'password_hash', 'create_time', 'last_login', 
 #     'is_email_confirmed', 'is_superuser', 'role'])
-class ProfileForm(Form):
+class ProfileForm(FlaskForm):
     # email = StringField('Email', validators=[Required(), Length(1,128), Email()])
     display_name = StringField('Display Name', validators=[Length(1,128)])
     biography = StringField('Biography')
@@ -67,7 +67,7 @@ class ProfileForm(Form):
     facebook = StringField('Facebook', validators=[URL(), Optional()])
     linkedin = StringField('Linkedin', validators=[URL(), Optional()])
 
-class PasswordForm(Form):
+class PasswordForm(FlaskForm):
     current_password = PasswordField('Current Password', validators=[Required()])
     new_password = PasswordField('New Password', validators=[Required(), EqualTo('password2', message='Passwords must match')])
     password2 = PasswordField('Confirm password', validators=[Required()])
@@ -76,7 +76,7 @@ class PasswordForm(Form):
         if not current_user.verify_password(field.data):
             raise ValidationError('Current password is wrong')
 
-class PasswordForm2(Form):
+class PasswordForm2(FlaskForm):
     new_password = PasswordField('New Password', validators=[Required(), EqualTo('password2', message='Passwords must match')])
     password2 = PasswordField('Confirm password', validators=[Required()])
 
@@ -84,7 +84,7 @@ class PasswordForm2(Form):
         if not current_user.verify_password(field.data):
             raise ValidationError('Current password is wrong')
 
-class UsernameForm(Form):
+class UsernameForm(FlaskForm):
     username = StringField('Username', validators=[Required(), Length(1,64), 
         Regexp('^[A-Za-z0-9_.]*$', 0, 'Usernames must have only letters, numbers dots or underscores')])
     email = StringField('Email', validators=[Required(), Length(1,128), Email()])
