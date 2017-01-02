@@ -13,6 +13,7 @@ from mongoengine.queryset.visitor import Q
 from . import models, tasks, forms
 from gitmark.config import GitmarkSettings
 from accounts import github_auth
+from accounts.permissions import admin_permission
 
 PER_PAGE = GitmarkSettings['pagination']['per_page']
 
@@ -367,7 +368,7 @@ class Search4Collection(MethodView):
         return instance.post(collection_id)
 
 class ReposView(MethodView):
-    decorators = [login_required, ]
+    decorators = [login_required, admin_permission.require(401),]
     template_name = 'main/repos.html'
 
     def get(self):

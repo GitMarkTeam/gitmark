@@ -144,14 +144,14 @@ def get_current_user():
 
 
 class Users(MethodView):
-    # decorators = [login_required, admin_permission.require(401)]
+    decorators = [login_required, admin_permission.require(401)]
     template_name = 'accounts/users.html'
     def get(self):
         users = models.User.objects.all()
         return render_template(self.template_name, users=users)
 
 class User(MethodView):
-    # decorators = [login_required, admin_permission.require(401)]
+    decorators = [login_required, admin_permission.require(401)]
     template_name = 'accounts/user.html'
 
     def get_context(self, username, form=None):

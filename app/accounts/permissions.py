@@ -14,8 +14,8 @@ su_need = RoleNeed('su')
 su_permission = Permission(su_need)
 admin_permission = Permission(RoleNeed('admin')).union(su_permission)
 editor_permission = Permission(RoleNeed('editor')).union(admin_permission)
-writer_permission = Permission(RoleNeed('writer')).union(editor_permission)
-reader_permission = Permission(RoleNeed('reader')).union(writer_permission)
+general_permission = Permission(RoleNeed('general')).union(editor_permission)
+guest_permission = Permission(RoleNeed('guest')).union(general_permission)
 
 
 @identity_loaded.connect # Both of this and the following works
@@ -39,6 +39,7 @@ def on_identity_loaded(sender, identity):
         identity.provides.add(su_need)
         # return current_user.role
 
-    identity.allow_edit = editor_permission.allows(identity)
+    identity.allow_su = su_permission.allows(identity)
     identity.allow_admin = admin_permission.allows(identity)
-    identity.allow_write = writer_permission.allows(identity)
+    identity.allow_edit = editor_permission.allows(identity)
+    identity.allow_general = general_permission.allows(identity)

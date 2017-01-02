@@ -3,11 +3,11 @@ from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
 from gitmark import db, login_manager
 
-# ROLES = ('admin', 'editor', 'writer', 'reader')
+
 ROLES = (('admin', 'admin'),
             ('general', 'general'),
-            ('writer', 'writer'),
-            ('reader', 'reader'))
+            ('editor', 'editor'),
+            ('guest', 'guest'))
 SOCIAL_NETWORKS = {
     'weibo': {'fa_icon': 'fa fa-weibo', 'url': None},
     'weixin': {'fa_icon': 'fa fa-weixin', 'url': None},
