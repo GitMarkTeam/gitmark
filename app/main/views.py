@@ -395,7 +395,7 @@ class ReposView(MethodView):
                 }
             ])
 
-        data = { 'repos':repos, 'languages':languages.value_list, 'cur_language':cur_language, 
+        data = { 'repos':repos, 'languages':languages.value_list if languages else [], 'cur_language':cur_language, 
             'url_params':url_params }
 
         data['language_cursor'] = language_cursor
