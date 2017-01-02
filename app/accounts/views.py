@@ -12,6 +12,8 @@ from main import models as main_models
 from permissions import admin_permission, su_permission
 from gitmark.config import GitmarkSettings
 
+default_user_image = GitmarkSettings['default_user_image']
+
 class LoginView(MethodView):
     template_name = 'accounts/login.html'
 
@@ -72,6 +74,7 @@ def register(create_su=False):
         user.email = form.email.data
 
         user.display_name = user.username
+        user.avatar_url = default_user_image
         
         if create_su and GitmarkSettings['allow_su_creation']:
             user.is_superuser = True
@@ -112,6 +115,7 @@ class RegistrationView(MethodView):
             user.email = form.email.data
 
             user.display_name = user.username
+            user.avatar_url = default_user_image
             
             if create_su and GitmarkSettings['allow_su_creation']:
                 user.is_superuser = True
@@ -131,6 +135,7 @@ def add_user():
         user.email = form.email.data
 
         user.display_name = user.username
+        user.avatar_url = default_user_image
 
         user.save()
 
@@ -155,10 +160,11 @@ class User(MethodView):
     template_name = 'accounts/user.html'
 
     def get_context(self, username, form=None):
+        user = models.User.objects.get_or_404(username=username)
         if not form:
-            user = models.User.objects.get_or_404(username=username)
+            # user = models.User.objects.get_or_404(username=username)
             form = forms.UserForm(obj=user)
-        data = {'form':form}
+        data = {'form':form, 'user':user}
         return data
 
     def get(self, username, form=None):
@@ -172,8 +178,9 @@ class User(MethodView):
             if user.email != form.email.data:
                 user.is_email_confirmed = False
             user.email = form.email.data
-            # user.is_active = form.is_active.data
-            # user.is_superuser = form.is_superuser.data
+            # print 'is superuser:', request.form.get('is_superuser1')
+            # user.is_active = (request.form.get('is_active')!=None)
+            user.is_superuser = (request.form.get('is_superuser')!=None)
             user.role = form.role.data
             user.save()
             flash('Succeed to update user details', 'success')

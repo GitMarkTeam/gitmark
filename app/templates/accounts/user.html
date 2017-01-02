@@ -9,6 +9,18 @@
         {% import "_form.html" as forms %}
         <form method="POST" action="">
             {{ forms.render(form) }}
+            {% if g.identity.allow_su %}
+            <div class="checkbox">
+                <label>
+                  <input type="checkbox" name='is_superuser' {%if user.is_superuser %}checked{% endif %}> Is Superuser
+                </label>
+            </div>
+            <!-- <div class="checkbox">
+                <label>
+                  <input type="checkbox" name='is_active'> Is Active
+                </label>
+            </div> -->
+            {% endif %}
             <button type="submit" class="btn btn-primary" name="user" value="user">Submit</button>
         </form>
     </div>
