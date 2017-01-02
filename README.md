@@ -1,4 +1,4 @@
-# gitmark2
+# GitMark
 
 The following features are applied by GitMark
 
