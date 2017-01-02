@@ -340,8 +340,8 @@ class Search4Collection(MethodView):
         data['keyword'] = keyword
         data['flag'] = flag
         if flag:
-            url_parm = '?keyword={0}&flag={1}'.format(keyword, flag)
-            data['url_parm'] = url_parm
+            url_params = 'keyword={0}&flag={1}'.format(keyword, flag)
+            data['url_params'] = url_params
 
         if flag == 'repo':
             repos = repos.filter(name__icontains=keyword)
