@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% block main %}
+<div class="row">
+    <div class="col-md-8 col-md-offset-2">
+    <h3>Search Result</h3><hr>
+    
+    <form method="POST">
+        {% if not has_items %}
+            <p>No repo found</p>
+        {% else %}
+        <div class="col-md-8">
+            {% for repo in repos %}
+            <!-- <div class="col-md-6"> -->
+                <div class="form-group">
+                  <label>
+                    <input type="checkbox" name='repos' value='{{ repo|tojson() }}' > {{ repo['full_name'] }} <a href="{{ repo['link'] }}"><i class="fa fa-github"></i></a>
+                  </label>
+                  
+                    
+                  
+                  <p><small>{{ repo['description'] }}</small></p>
+                  <p>
+                    <span class="label label-default"><small>{{ repo['language'] }}</small></span> &nbsp;&nbsp;
+                    <a href="#" class="repo-star"><span><i class="fa fa-star"></i></span></a> &nbsp;&nbsp;
+                    <a href="#" class="repo-collection"><span><i class="fa fa-cubes"></i></span></a>
+                  </p>
+                  <hr>
+                </div>
+            <!-- </div> -->
+            {% endfor %}
+            
+        </div>
+        <div class="col-md-4">
+        <h4>Actions</h4><hr>
+          <p><button type="submit" class="btn btn-success btn-block" name="add_to_collection" value="click" >Add To Collections</button></p>
+          <p><button type="submit" class="btn btn-info btn-block" name="star" value="click" >Star Selected Repos</button></p>
+          <br><br>
+
+        <h4>Collections</h4><hr>
+          {% for collection in collections %}
+          <p><input type="checkbox" name="collections" value="{{ collection.id }}"> {{ collection.name }}</p>
+          {% endfor %}
+          
+
+          
+        <!-- <h4>Star</h4><hr> -->
+          
+        </div>
+        {% endif %}
+    </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block js %}
+<script type="text/javascript">
+  $('.repo-star').on('click', function(event){
+    alert('star')
+  })
+  
+</script>
+
+{% endblock %}

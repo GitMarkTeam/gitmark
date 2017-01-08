@@ -2,8 +2,11 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
+import json
 
-from flask import request, redirect, render_template, url_for, abort, flash, session
+import requests
+
+from flask import request, redirect, render_template, url_for, abort, flash, session, jsonify
 from flask import current_app, make_response
 from flask.views import MethodView
 
@@ -12,10 +15,13 @@ from mongoengine.queryset.visitor import Q
 
 from . import models, tasks, forms
 from gitmark.config import GitmarkSettings
+from gitmark import github_apis
 from accounts import github_auth
 from accounts.permissions import admin_permission
 
 PER_PAGE = GitmarkSettings['pagination']['per_page']
+app_user = GitmarkSettings['github']['app_user']
+app_pass = GitmarkSettings['github']['app_pass']
 
 def hello():
     return 'hello, world'
@@ -402,4 +408,103 @@ class ReposView(MethodView):
         data['language_cursor'] = language_cursor
          
         return render_template(self.template_name, **data)
+
+class GitHubResultView(MethodView):
+    decorators = [login_required]
+    template_name = 'main/github_result.html'
+
+    def get(self):
+        key = request.args.get('key')
+        if not key or not key.strip():
+            return redirect('main:index')
+        
+
+        api = github_apis.search_repos(q=key.strip())
+        res = requests.get(api, auth=(app_user, app_pass))
+        result = res.json()
+        data = {'result':result}
+
+
+        has_items = result['total_count'] > 0
+        data['has_items'] = has_items
+
+        if has_items:
+            collections = models.Collection.objects(owner=current_user.username)
+            data['collections'] = collections
+            repos = []
+
+            for item in result['items']:
+                repo = {
+                    'name': item['name'],
+                    'full_name': item['full_name'],
+                    'link': item['html_url'],
+                    'author': item['owner']['login'],
+                    'author_link': item['owner']['html_url'],
+                    'desc': item['description'],
+                    'language': item['language']
+                }
+
+                repos.append(repo)
+
+            data['repos'] = repos
+            # return jsonify({'repos':repos})
+
+        
+
+        return render_template(self.template_name, **data)
+
+    def post(self):
+        repos = request.form.getlist('repos')
+        repos = [ self.get_repo(json.loads(repo)) for repo in repos]
+
+        collection_ids = request.form.getlist('collections')
+
+        if request.form.get('add_to_collection'):
+            for collection_id in collection_ids:
+                try:
+                    collection = models.Collection.objects.get(id=collection_id)
+                    self.add_repos_to_collections(repos, collection)
+
+                except models.Collection.DoesNotExist:
+                    pass
+
+            msg = 'Repos have been added to collections'
+            flash(msg, 'success')
+            return redirect(url_for('main.my_collections'))
+
+
+        self.star_repos(repos)
+        msg = 'Repos have been starred'
+        flash(msg, 'success')
+        return redirect(url_for('main.starred_repos'))
+
+
+
+    def get_repo(self, repo_dict):
+        try:
+            repo = models.Repo.objects.get(full_name=repo_dict['full_name'])
+        except models.Repo.DoesNotExist:
+            repo = models.Repo()
+            repo.name = repo_dict['name']
+            repo.full_name = repo_dict['full_name']
+            repo.link = repo_dict['link']
+            repo.author = repo_dict['author']
+            repo.author_link = repo_dict['author_link']
+            repo.desc = repo_dict['desc']
+            repo.language = repo_dict['language']
+            repo.save()
+
+        return repo 
+
+    def add_repos_to_collections(self, repos, collection):
+
+        repos_list = [ {'id':repo.id, 'link':repo.link, 'full_name':repo.full_name, 'desc':repo.desc, 'language':repo.language } for repo in repos]
+
+        collection.modify(push_all__repos=repos_list)
+        collection.modify(set__last_update=datetime.now())
+
+
+    def star_repos(self, repos):
+        for repo in repos:
+            repo.modify(add_to_set__starred_users=current_user.username)
 
