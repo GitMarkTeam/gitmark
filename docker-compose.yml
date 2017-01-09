@@ -1,20 +1,19 @@
 gitmark:
   # restart: always
   # build: ./app
-  image: gevin/gitmark
+  image: gitmark/gitmark
   ports:
     - "8000:8000"
-    - "5000:5000"
+    # - "5000:5000"
   links:
     - mongo:mongo
     - redis:redis
-  # volumes:
-  #   - /usr/src/app/static
+
   env_file: .env
 
 mongo:
   # restart: always
-  image: mongo:latest
+  image: mongo:3.2
 
   volumes:
     - /mongo/data
@@ -22,5 +21,3 @@ mongo:
 redis:
   # restart: always
   image: redis:3.0
-  # ports:
-  #   - "6379:6379"

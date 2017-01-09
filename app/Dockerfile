@@ -1,5 +1,5 @@
 # MAINTAINER        Gevin <flyhigher139@gmail.com>
-# DOCKER-VERSION    1.8.2
+# DOCKER-VERSION    1.10
 #
 # Dockerizing Ubuntu: Dockerfile for building Ubuntu images
 FROM       ubuntu:14.04

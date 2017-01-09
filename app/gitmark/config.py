@@ -6,7 +6,7 @@ import os, sys
 
 GitmarkSettings = {
     'allow_registration': os.environ.get('allow_registration', 'true').lower() == 'true',
-    'allow_su_creation': os.environ.get('allow_su_creation', 'true').lower() == 'true',
+    'allow_su_creation': os.environ.get('allow_su_creation', 'false').lower() == 'true',
     'pagination':{
         'per_page': int(os.environ.get('per_page', 10)),
         'admin_per_page': int(os.environ.get('admin_per_page', 20)),
