@@ -483,6 +483,31 @@ class GitHubResultView(MethodView):
     def get_repo(self, repo_dict):
         try:
             repo = models.Repo.objects.get(full_name=repo_dict['full_name'])
+
+            detail_changed = False
+            
+            if repo.name != repo_dict['name']:
+                repo.name = repo_dict['name']
+                detail_changed = True
+            if repo.link != repo_dict['link']:
+                repo.link = repo_dict['link']
+                detail_changed = True
+            if repo.author != repo_dict['author']:
+                repo.author = repo_dict['author']
+                detail_changed = True
+            if repo.author_link != repo_dict['author_link']:
+                repo.author_link = repo_dict['author_link']
+                detail_changed = True
+            if repo.desc != repo_dict['desc']:
+                repo.desc = repo_dict['desc']
+                detail_changed = True
+            if repo.language != repo_dict.get('language'):
+                repo.desc = repo_dict.get('language') or 'unknown'
+                detail_changed = True
+
+            if detail_changed:
+                repo.save()
+
         except models.Repo.DoesNotExist:
             repo = models.Repo()
             repo.name = repo_dict['name']
@@ -491,7 +516,7 @@ class GitHubResultView(MethodView):
             repo.author = repo_dict['author']
             repo.author_link = repo_dict['author_link']
             repo.desc = repo_dict['desc']
-            repo.language = repo_dict['language']
+            repo.language = repo_dict.get('language') or 'unknown'
             repo.save()
 
         return repo 
