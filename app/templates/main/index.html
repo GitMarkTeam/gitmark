@@ -17,7 +17,7 @@
         <br>
 
         <!-- <h4>GitHub Account</h4> -->
-        {% if is_private %}
+        {% if not is_public %}
             <form method="POST">
                 <p> 
                 {% if user.github_username %}
