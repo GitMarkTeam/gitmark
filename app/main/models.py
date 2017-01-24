@@ -45,6 +45,7 @@ class Collection(db.Document):
     name = db.StringField(max_length=128)
     description = db.StringField()
     owner = db.StringField(max_length=128)
+    is_private = db.BooleanField(default=False)
     repos = db.ListField(db.DictField())
     last_update = db.DateTimeField()
     create_date = db.DateTimeField()

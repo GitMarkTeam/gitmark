@@ -173,6 +173,7 @@ class MyCollectionsView(MethodView):
             collection.name = form.name.data
             collection.description = form.description.data
             collection.owner = current_user.username
+            collection.is_private = form.is_private.data
 
             collection.save()
 
@@ -204,9 +205,11 @@ class MyCollectionEditView(MethodView):
         form = forms.CollectionForm(obj=request.form)
         name = form.name.data
         description = form.description.data
+        is_private = form.is_private.data
 
         collection.name = name
         collection.description = description
+        collection.is_private = is_private
 
         collection.save()
         msg = 'Succeed to update this collection'
