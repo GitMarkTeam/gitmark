@@ -18,6 +18,7 @@ from gitmark.config import GitmarkSettings
 from gitmark import github_apis
 from accounts import github_auth
 from accounts.permissions import admin_permission
+from accounts import models as accounts_models
 
 PER_PAGE = GitmarkSettings['pagination']['per_page']
 app_user = GitmarkSettings['github']['app_user']
@@ -61,15 +62,16 @@ class IndexView(MethodView):
 
     def get(self):
         data = {}
+        data['user'] = current_user
         starred_repos = models.Repo.objects(starred_users=current_user.username)
         collections = models.Collection.objects(owner=current_user.username)
+        
 
         data['starred_repos'] = starred_repos
         data['collections'] = collections
 
 
-        # starred_repos_count = starred_repos.count()
-        # collections_count = 
+        data['is_public'] = False 
 
         return render_template(self.template_name, **data)
 
@@ -86,22 +88,27 @@ class IndexView(MethodView):
         
         return redirect(url_for('main.index')) 
 
-# class UserView(MethodView):
-#     template_name = 'main/index.html'
+class UserView(MethodView):
+    # decorators = [login_required, ]
+    template_name = 'main/index.html'
 
-#     def get(self, username):
-#         data = {}
-#         starred_repos = models.Repo.objects(starred_users=username)
-#         collections = models.Collection.objects(owner=username, is_private=False)
+    def get(self, username):
+        data = {}
+        # current_user_name = username or current_user.username
+        user = accounts_models.User.objects.get_or_404(username=username)
+        
+        data['user'] = user
+        starred_repos = models.Repo.objects(starred_users=username)
+        collections = models.Collection.objects(owner=username, is_private=False)
+        
 
-#         data['starred_repos'] = starred_repos
-#         data['collections'] = collections
+        data['starred_repos'] = starred_repos
+        data['collections'] = collections
 
 
-#         # starred_repos_count = starred_repos.count()
-#         # collections_count = 
+        data['is_public'] = True
 
-#         return render_template(self.template_name, **data)
+        return render_template(self.template_name, **data)
 
 class StarredRepoView(MethodView):
     decorators = [login_required, ]

@@ -5,7 +5,7 @@
 <div class="row">
     <div class="col-md-3 col-md-offset-1">
         <h3>Account</h3><hr>
-        <img src="{{ current_user.avatar_url }}" width="80%" class="img-rounded">
+        <img src="{{ user.avatar_url }}" width="80%" class="img-rounded">
         <br><br><br>
         <!-- <h4>Username</h4> -->
 
@@ -13,52 +13,68 @@
             <!-- <i class="fa fa-circle fa-stack-2x"></i> -->
             <i class="fa fa-user fa-lg"></i>
         </span>
-        {{ current_user.username }}
+        {{ user.username }}
         <br>
 
         <!-- <h4>GitHub Account</h4> -->
-        <form method="POST">
-            <p> 
-            {% if current_user.github_username %}
-            <span class="fa-stack">
-                <i class="fa fa-github fa-lg"></i>
-            </span><a href="{{ current_user.github }}">{{ current_user.github_username }}</a> &nbsp;| 
-                <button type="submit" class="btn btn-link" name="rm_github" value='true'>  <i class="fa fa-trash-o"></i></button>
-            {% else %}
-                <button type="submit" class="btn btn-success" name="link_github" value='true'> Link to <i class="fa fa-github"></i></button>
+        {% if is_private %}
+            <form method="POST">
+                <p> 
+                {% if user.github_username %}
+                <span class="fa-stack">
+                    <i class="fa fa-github fa-lg"></i>
+                </span><a href="{{ user.github }}">{{ user.github_username }}</a> &nbsp;| 
+                    <button type="submit" class="btn btn-link" name="rm_github" value='true'>  <i class="fa fa-trash-o"></i></button>
+                {% else %}
+                    <button type="submit" class="btn btn-success" name="link_github" value='true'> Link to <i class="fa fa-github"></i></button>
+                {% endif %}
+                </p>
+            </form>
+        {% else %}
+            {% if user.github_username %}
+                <span class="fa-stack">
+                    <i class="fa fa-github fa-lg"></i>
+                </span><a href="{{ user.github }}">{{ user.github_username }}</a>
             {% endif %}
-            </p>
-        </form>
+        {% endif %}
         <hr>
 
         <h4>Social Network</h4>
-            {% if current_user.social_networks['twitter']['url'] %}
-                <a href='{{ current_user.social_networks["twitter"]["url"] }}'><i class="fa fa-twitter fa-lg"></i></a> &nbsp;
+            {% if user.social_networks['twitter']['url'] %}
+                <a href='{{ user.social_networks["twitter"]["url"] }}'><i class="fa fa-twitter fa-lg"></i></a> &nbsp;
+            {% else %}
+                <i class="fa fa-twitter fa-lg"></i> &nbsp;
             {% endif %}
-            {% if current_user.social_networks['weibo']['url'] %}
-                <a href='{{ current_user.social_networks["weibo"]["url"] }}'><i class="fa fa-weibo fa-lg"></i></a> &nbsp;
+            {% if user.social_networks['weibo']['url'] %}
+                <a href='{{ user.social_networks["weibo"]["url"] }}'><i class="fa fa-weibo fa-lg"></i></a> &nbsp;
+            {% else %}
+                <i class="fa fa-weibo fa-lg"></i> &nbsp;
             {% endif %}
-            {% if current_user.social_networks['facebook']['url'] %}
-                <a href='{{ current_user.social_networks["facebook"]["url"] }}'><i class="fa fa-facebook fa-lg"></i></a> &nbsp;
+            {% if user.social_networks['facebook']['url'] %}
+                <a href='{{ user.social_networks["facebook"]["url"] }}'><i class="fa fa-facebook fa-lg"></i></a> &nbsp;
+            {% else %}
+                <i class="fa fa-facebook fa-lg"></i> &nbsp;
             {% endif %}
-            {% if current_user.social_networks['linkedin']['url'] %}
-                <a href='{{ current_user.social_networks["linkedin"]["url"] }}'><i class="fa fa-linkedin fa-lg"></i></a> &nbsp;
+            {% if user.social_networks['linkedin']['url'] %}
+                <a href='{{ user.social_networks["linkedin"]["url"] }}'><i class="fa fa-linkedin fa-lg"></i></a> &nbsp;
+            {% else %}
+                <i class="fa fa-linkedin fa-lg"></i> &nbsp;
             {% endif %}
-            {% if current_user.social_networks['weixin']['url'] %}
-                <a id="btn_weixin" href='{{ current_user.social_networks["weixin"]["url"] }}'><i class="fa fa-weixin fa-lg"></i></a> &nbsp;
+            {% if user.social_networks['weixin']['url'] %}
+                <a id="btn_weixin" href='{{ user.social_networks["weixin"]["url"] }}'><i class="fa fa-weixin fa-lg"></i></a> &nbsp;
                 <!-- weixin -->
                 <div id="weixin" class="hidden">
                     <br>
-                    <img src="{{ current_user.social_networks["weixin"]["url"] }}?imageView/2/w/150" title="weixin">
+                    <img src="{{ user.social_networks["weixin"]["url"] }}?imageView/2/w/150" title="weixin">
                 </div> 
             {% endif %}                
 
         <hr>
 
-        {% if current_user.homepage_url %}
+        {% if user.homepage_url %}
         <h4>Homepage</h4>
-            {% if current_user.homepage_url %}
-            <a href="{{ current_user.homepage_url }}"><i class="fa fa-home fa-lg"></i></a> {{ current_user.homepage_url }}
+            {% if user.homepage_url %}
+            <a href="{{ user.homepage_url }}"><i class="fa fa-home fa-lg"></i></a> {# user.homepage_url #}
             {% endif %}
         <hr>
         {% endif %}
