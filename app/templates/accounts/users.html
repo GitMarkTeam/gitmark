@@ -23,7 +23,7 @@
             <td><a href="{{ url_for('accounts.edit_user', username=user.username)}}">{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
-            {% if user.github_username %}<a href="{{ user.github_url }}" target="_blank"><i class="fa fa-github fa-lg"></i></a>
+            {% if user.github_username %}<a href="{{ user.github }}" target="_blank"><i class="fa fa-github fa-lg"></i></a>
             {% else %}<i class="fa fa-github fa-lg"></i>{% endif %}
             </td>
             <td>{{ user.last_login.strftime('%Y/%m/%d %H:%M:%S') }}</td>
