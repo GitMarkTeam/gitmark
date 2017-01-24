@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1">
+      <table class="table">
+          <thead>
+              <th>No.</th>
+              <th>Name</th>
+              <th>Description</th>
+              <th>Create Time</th>
+              <th>Update Time</th>
+          </thead>
+          <tbody>
+          {% for collection in collections %}
+          <tr>
+              <td>{{ loop.index }}</td>
+              <td><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">{{ collection.name }}</a></td>
+              <td>{{ collection.description|default('No description yet', true) }}</td>
+              <td>{{ collection.create_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+              <td>{{ collection.last_update.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+          </tr>
+              
+          {% endfor %}
+          </tbody>
+      </table>
+    </div>
+</div>
+{% endblock %}
+
+
+

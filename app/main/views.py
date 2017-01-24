@@ -86,6 +86,23 @@ class IndexView(MethodView):
         
         return redirect(url_for('main.index')) 
 
+# class UserView(MethodView):
+#     template_name = 'main/index.html'
+
+#     def get(self, username):
+#         data = {}
+#         starred_repos = models.Repo.objects(starred_users=username)
+#         collections = models.Collection.objects(owner=username, is_private=False)
+
+#         data['starred_repos'] = starred_repos
+#         data['collections'] = collections
+
+
+#         # starred_repos_count = starred_repos.count()
+#         # collections_count = 
+
+#         return render_template(self.template_name, **data)
+
 class StarredRepoView(MethodView):
     decorators = [login_required, ]
     template_name = 'main/starred_repo.html'
@@ -181,6 +198,15 @@ class MyCollectionsView(MethodView):
 
         return self.get(form=form)
 
+class UserCollectionsView(MethodView):
+    template_name = 'main/collections_user_public.html'
+
+    def get(self, username):
+        collections = models.Collection.objects(owner=username, is_private=False)
+
+        data = { 'collections':collections}
+
+        return render_template(self.template_name, **data)
 
 class MyCollectionEditView(MethodView):
     decorators = [login_required, ]
@@ -240,9 +266,12 @@ class CollectionView(MethodView):
 
         data = {'cur_collection': collection, 'collections':None}
 
-        if collection.owner == current_user.username:
-            collections = models.Collection.objects(owner=current_user.username)
-            data['collections'] = collections
+        if not current_user.is_anonymous:
+            collections = models.Collection.objects(owner=collection.owner)
+        else:
+            collections = models.Collection.objects(owner=collection.owner, is_private=False)
+        
+        data['collections'] = collections
 
         return render_template(self.template_name, **data)
 
