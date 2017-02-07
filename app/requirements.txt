@@ -1,7 +1,7 @@
 flask
 flask-script
 flask-login
-Flask-WTF==0.13.1
+Flask-WTF
 flask-principal
 WTForms
 mongoengine==0.10.1
