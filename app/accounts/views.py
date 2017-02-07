@@ -9,7 +9,7 @@ from flask_principal import Identity, AnonymousIdentity, identity_changed
 
 from . import models, forms, github_auth
 from main import models as main_models
-from permissions import admin_permission, su_permission
+from .permissions import admin_permission, su_permission
 from gitmark.config import GitmarkSettings
 
 default_user_image = GitmarkSettings['default_user_image']

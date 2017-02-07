@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import requests
 
 from gitmark import create_app, make_celery, celery_app
@@ -20,7 +21,7 @@ app_pass = GitmarkSettings['github']['app_pass']
 
 @celery_app.task(name='gitmark.test_celery')
 def test_celery():
-    print 'hello, world'
+    print('hello, world')
 
 # @celery_app.task(name='gitmark.import_starred_repos')
 # def import_github_starred_repos(github_username, gitmark_username):
@@ -83,9 +84,9 @@ def import_github_repos(github_username, gitmark_username=None):
 
     # GitHub API rate limit exceeded 
     if not isinstance(starred_repos, list):
-        print 'GitHub API rate limit exceeded '
-        print res.status_code
-        print res.text
+        print('GitHub API rate limit exceeded ')
+        print(res.status_code)
+        print(res.text)
         return
 
     while len(starred_repos) > 0:
@@ -112,7 +113,7 @@ def import_github_repos2(github_username, gitmark_username=None):
 
     # GitHub API rate limit exceeded 
     if not isinstance(starred_repos, list):
-        print 'GitHub API rate limit exceeded '
+        print('GitHub API rate limit exceeded ')
         return
 
     while len(starred_repos) > 0:

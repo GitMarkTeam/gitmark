@@ -1,15 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function
 import os, datetime
 
-# from django.http import HttpResponse, Http404
-# from django.shortcuts import render, redirect
-# from django.core.urlresolvers import reverse
-# from django.contrib.auth import authenticate, login
-# from django.contrib.auth.models import User
-# from django.contrib import messages
-# from django.conf import settings
 from flask import render_template, redirect, request, flash, url_for, current_app, session
 from flask_login import login_user, current_user
 
@@ -91,7 +85,7 @@ def github_register_behavior():
     github_user = res.json()
     username = github_user.get('login')
     email = github_user.get('email')
-    print 'email: {0}'.format(email)
+    print('email: {0}'.format(email))
     github_url = github_user.get('html_url')
     github_avatar_url = github_user.get('avatar_url')
 

@@ -6,7 +6,7 @@ from flask_login import LoginManager
 from flask_principal import Principal 
 
 from celery import Celery
-from config import config
+from .config import config
 
 
 db = MongoEngine()
