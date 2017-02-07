@@ -3,6 +3,11 @@
 
 from datetime import datetime
 import json
+try:
+    from itertools import filterfalse
+except ImportError:
+    # python 2
+    from itertools import ifilterfalse as filterfalse
 
 import requests
 
@@ -560,11 +565,21 @@ class GitHubResultView(MethodView):
 
         return repo 
 
+    # def add_repos_to_collections(self, repos, collection):
+
+    #     repos_list = [ {'id':repo.id, 'link':repo.link, 'full_name':repo.full_name, 'desc':repo.desc, 'language':repo.language } for repo in repos]
+
+    #     collection.modify(push_all__repos=repos_list)
+    #     collection.modify(set__last_update=datetime.now())
+
     def add_repos_to_collections(self, repos, collection):
 
         repos_list = [ {'id':repo.id, 'link':repo.link, 'full_name':repo.full_name, 'desc':repo.desc, 'language':repo.language } for repo in repos]
+        exist_repos = collection.repos
 
-        collection.modify(push_all__repos=repos_list)
+        diff_repos = list(filterfalse(lambda repo: repo in exist_repos, repos_list))
+
+        collection.modify(push_all__repos=diff_repos)
         collection.modify(set__last_update=datetime.now())
 
 
