@@ -12,7 +12,7 @@ from . import models
 class LoginForm(FlaskForm):
     username = StringField()
     password = PasswordField()
-    remember_me = BooleanField('Keep me logged in')
+    remember_me = BooleanField('Keep me logged in', default=True)
 
 class RegistrationForm(FlaskForm):
     username = StringField('Username', validators=[Required(), Length(1,64), 
