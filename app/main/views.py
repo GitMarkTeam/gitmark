@@ -61,11 +61,24 @@ def test():
     return str(obj.value_list)
     return 'true'
 
+
+class EnterpriseView(MethodView):
+    template_name = 'main/enterprise.html'
+    def get(self):
+        return render_template(self.template_name)
+
 class IndexView(MethodView):
-    decorators = [login_required, ]
+    # decorators = [login_required, ]
     template_name = 'main/index.html'
 
+    def display_enterprise_page(self):
+        enterprise_view = EnterpriseView()
+        return enterprise_view.get()
+
     def get(self):
+        if current_user.is_anonymous:
+            return self.display_enterprise_page()
+
         data = {}
         data['user'] = current_user
         starred_repos = models.Repo.objects(starred_users=current_user.username)
@@ -81,6 +94,9 @@ class IndexView(MethodView):
         return render_template(self.template_name, **data)
 
     def post(self):
+        if current_user.is_anonymous:
+            return self.display_enterprise_page()
+
         if request.form.get('link_github'):
             session['oauth_callback_type'] = 'link_github'           
             return github_auth.github_auth()
@@ -92,6 +108,7 @@ class IndexView(MethodView):
 
         
         return redirect(url_for('main.index')) 
+
 
 class UserView(MethodView):
     # decorators = [login_required, ]

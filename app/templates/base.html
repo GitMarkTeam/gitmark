@@ -45,7 +45,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" href="#">GitMark <i class="fa fa-user"></i></a>
+          <a class="navbar-brand" href="{{ url_for('main.index') }}">GitMark</i></a>
         </div>
 
         {% if current_user.is_authenticated %}
