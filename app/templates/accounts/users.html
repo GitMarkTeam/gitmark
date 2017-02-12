@@ -20,7 +20,7 @@
     {% for user in users %}
         <tr id="user-{{ user.username }}">
             <td>{{ loop.index }}</td>
-            <td><a href="{{ url_for('accounts.edit_user', username=user.username)}}">{{ user.username }}</td>
+            <td><a href="{{ url_for('main.user_view', username=user.username)}}">{{ user.username }}</td>
             <td>{{ user.email }}</td>
             <td>
             {% if user.github_username %}<a href="{{ user.github }}" target="_blank"><i class="fa fa-github fa-lg"></i></a>
@@ -45,8 +45,22 @@
         <!-- <h4>Filter By Group</h4> -->
         <p><strong>Filter By Role</strong></p>
         <hr>
+        <!-- <div class="list-group">
+          Not yet!
+        </div> -->
         <div class="list-group">
-          Not yet
+            {% for role in roles %}
+            
+                {% if current_role and current_role == role %}
+                    <a href="?current_role={{ current_role }}" class="list-group-item no-border-group-list active">{{ role }} 
+                    <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
+                    </a>
+                {% else %}
+                    <a href="?current_role={{ role }}" class="list-group-item no-border-group-list ">{{ role }} 
+                    </a>
+                {% endif %}
+            
+            {% endfor %}
         </div>
     </div>
 </div>
@@ -76,5 +90,9 @@ $('.del-user').on('click', function (event) {
     });
     return false;
   });
+$('.rm-filter').on('click', function (event) {
+        location.href = ".";
+        return false;
+      });
 </script>
 {% endblock %}

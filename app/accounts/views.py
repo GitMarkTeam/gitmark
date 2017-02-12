@@ -152,8 +152,19 @@ class Users(MethodView):
     decorators = [login_required, admin_permission.require(401)]
     template_name = 'accounts/users.html'
     def get(self):
+        roles_raw = models.ROLES
+        roles = [role[1] for role in roles_raw]
+        current_role = request.args.get('current_role')
+
         users = models.User.objects.all()
-        return render_template(self.template_name, users=users)
+        if current_role:
+            users = users.filter(role=current_role)
+        data = {
+            'users': users,
+            'roles': roles,
+            'current_role': current_role
+        }
+        return render_template(self.template_name, **data)
 
 class User(MethodView):
     decorators = [login_required, admin_permission.require(401)]
