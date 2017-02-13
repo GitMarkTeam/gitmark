@@ -1,23 +1,24 @@
-gitmark:
-  # restart: always
-  # build: ./app
-  image: gitmark/gitmark
-  ports:
-    - "8000:8000"
-    # - "5000:5000"
-  links:
-    - mongo:mongo
-    - redis:redis
+version: '2'
+services:
+  gitmark:
+    # restart: always
+    image: gitmark/gitmark
+    ports:
+      - "8000:8000"
+      # - "5000:5000"
+    depends_on:
+      - mongo
+      - redis
 
-  env_file: .env
+    env_file: .env
 
-mongo:
-  # restart: always
-  image: mongo:3.2
+  mongo:
+    # restart: always
+    image: mongo:3.2
 
-  volumes:
-    - /mongo/data
+    volumes:
+      - /mongo/data
 
-redis:
-  # restart: always
-  image: redis:3.0
+  redis:
+    # restart: always
+    image: redis:3.0
