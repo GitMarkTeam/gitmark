@@ -76,6 +76,26 @@ export BUCKET=some-bucket
 export QINIU_URL=http://qiniu.igevin.tech/
 ```
 
+A `.env` will be just enough if you are using docker:
+
+```
+DEBUG=true
+config=prd
+MONGO_HOST=mongo
+
+GITHUB_ID=
+GITHUB_SECRET=
+APP_USER=
+APP_PASS=
+
+QINIU_AK=pJJ-
+QINIU_SK=
+BUCKET=
+QINIU_URL=
+
+allow_su_creation=false
+```
+
 ### Superuser Creation
 
 If you set this environment varible, you can create superusers:
