@@ -129,6 +129,7 @@ class UserView(MethodView):
 
 
         data['is_public'] = True
+        data['username'] = username
 
         return render_template(self.template_name, **data)
 
@@ -136,8 +137,10 @@ class StarredRepoView(MethodView):
     decorators = [login_required, ]
     template_name = 'main/starred_repo.html'
 
-    def get(self):
-        repos = models.Repo.objects(starred_users=current_user.username)
+    def get(self, username=None):
+        if not username:
+            username = current_user.username
+        repos = models.Repo.objects(starred_users=username)
         # languages = models.GitmarkMeta.objects(key='language').first()
         try:
             languages = models.GitmarkMeta.objects.get(key='language')
@@ -290,7 +293,7 @@ class CollectionView(MethodView):
     template_name = 'main/collection.html'
     def get(self, collection_id):
         collection = models.Collection.objects(id=collection_id).first()
-        if not collection:
+        if (not collection) or (collection.is_private and current_user.is_anonymous):
             return 'no collection', 404
 
         data = {'cur_collection': collection, 'collections':None}
