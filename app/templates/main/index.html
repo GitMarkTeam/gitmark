@@ -2,6 +2,15 @@
 {% block title %}Home{% endblock %}
 
 {% block main %}
+
+    {% if is_public %}
+        {% set starred_repos_url =  url_for('main.user_starred_repos', username=username) %}
+        {% set collections_url =  url_for('main.user_collections', username=username) %}
+    {% else %}
+        {% set starred_repos_url =  url_for('main.starred_repos') %}
+        {% set collections_url =  url_for('main.my_collections') %}
+    {% endif %}
+
 <div class="row">
     <div class="col-md-3 col-md-offset-1">
         <h3>Account</h3><hr>
@@ -89,23 +98,16 @@
                 <small>follower</small>
             </div>
             <div class='col-md-3'>
-                <a href="{{ url_for('main.starred_repos')}}"><p class="lead">{{ starred_repos | count }}</p></a>
+                <a href="{{ starred_repos_url }}"><p class="lead">{{ starred_repos | count }}</p></a>
                 <small>starred</small>
             </div>
             <div class='col-md-3'>
-                <a href="{{ url_for('main.my_collections') }}"><p class="lead">{{ collections | length }}</p></a>
+                <a href="{{ collections_url }}"><p class="lead">{{ collections | length }}</p></a>
                 <small>collection</small>
             </div>
         </div>
         
     </div>
-    {% if is_public %}
-        {% set starred_repos_url =  url_for('main.starred_repos') %}
-        {% set collections_url =  url_for('main.my_collections') %}
-    {% else %}
-        {% set starred_repos_url =  url_for('main.user_starred_repos', username=username) %}
-        {% set collections_url =  url_for('main.user_collections', username=username) %}
-    {% endif %}
     <div class="col-md-4">
         <h3>Recently Starred</h3><hr>
         <div class="">
