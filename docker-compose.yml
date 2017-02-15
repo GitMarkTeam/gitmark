@@ -17,7 +17,9 @@ services:
     image: mongo:3.2
 
     volumes:
-      - /mongo/data
+      - /data/db
+    # ports:
+    #   - "27017:27017"
 
   redis:
     # restart: always
