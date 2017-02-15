@@ -191,9 +191,9 @@
               daovoice('init', {
               app_id: "f9b57d5e",
               user_id: "{{ current_user.username }}", // 必填: 该用户在您系统上的唯一ID
-              email: "flyhigher139@gmail.com", // 选填:  该用户在您系统上的主邮箱
-              name: "Gevin", // 选填: 用户名
-              signed_up: 1449821660 // 选填: 用户的注册时间，用Unix时间戳表示
+              email: "{{ current_user.email }}", // 选填:  该用户在您系统上的主邮箱
+              name: "{{ current_user.username }}", // 选填: 用户名
+              signed_up: {{ current_user.create_time.timestamp() }} // 选填: 用户的注册时间，用Unix时间戳表示
             });
             daovoice('update');
         </script>
