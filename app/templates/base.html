@@ -193,7 +193,7 @@
               user_id: "{{ current_user.username }}", // 必填: 该用户在您系统上的唯一ID
               email: "{{ current_user.email }}", // 选填:  该用户在您系统上的主邮箱
               name: "{{ current_user.username }}", // 选填: 用户名
-              signed_up: {{ current_user.create_time.timestamp() }} // 选填: 用户的注册时间，用Unix时间戳表示
+              signed_up: {{ current_user.create_time.strftime("%s") }} // 选填: 用户的注册时间，用Unix时间戳表示
             });
             daovoice('update');
         </script>
