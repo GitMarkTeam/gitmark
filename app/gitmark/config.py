@@ -1,7 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, sys
+import os, sys, logging
+
+logging_config = dict(
+    version = 1,
+    formatters = {
+        'f': {'format':
+              '%(asctime)s %(name)-12s %(levelname)-8s %(message)s'}
+        },
+    handlers = {
+        'console': {'class': 'logging.StreamHandler',
+              'formatter': 'f',
+              'level': logging.DEBUG},
+        'file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'JuneMessage.log',
+            'formatter': 'f'},
+        },
+    root = {
+        'handlers': ['console', 'file'],
+        'level': logging.DEBUG,
+        },
+)
 
 
 GitmarkSettings = {
