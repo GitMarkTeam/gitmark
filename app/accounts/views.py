@@ -193,6 +193,7 @@ class User(MethodView):
             # print 'is superuser:', request.form.get('is_superuser1')
             # user.is_active = (request.form.get('is_active')!=None)
             user.is_superuser = (request.form.get('is_superuser')!=None)
+            user.is_email_confirmed = (request.form.get('is_email_confirmed')!=None)
             user.role = form.role.data
             user.save()
             flash('Succeed to update user details', 'success')
@@ -401,6 +402,8 @@ class Password(MethodView):
                 current_user.save()
                 flash('Confirmation message has been sent, please check your email to confirm your account')
                 # return 'sending confirm email'
+            else:
+                flash('Set your email first!', 'danger')
 
         return self.get(password_form=password_form, password_form2=password_form2, user_form=user_form)
 
@@ -414,7 +417,7 @@ class ConfirmEmail(MethodView):
         if current_user.confirm_email(token):
             flash('Your email has been confirmed', 'success')
         else:
-            flash('The confirmation link is invalid or has expired', 'error')
+            flash('The confirmation link is invalid or has expired', 'danger')
 
         return redirect(url_for('accounts.password'))
 
