@@ -11,3 +11,4 @@ requests
 requests_oauthlib
 celery[redis]
 qiniu
+itsdangerous

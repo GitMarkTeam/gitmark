@@ -18,6 +18,7 @@ accounts.add_url_rule('/users/edit/<username>', view_func=views.User.as_view('ed
 # accounts.add_url_rule('/su-users/edit/<username>', view_func=views.SuUser.as_view('su_edit_user'))
 accounts.add_url_rule('/user/settings/', view_func=views.Profile.as_view('settings'))
 accounts.add_url_rule('/user/password/', view_func=views.Password.as_view('password'))
+accounts.add_url_rule('/user/email-confirm/<token>/', view_func=views.ConfirmEmail.as_view('confirm_email'))
 
 
 accounts.add_url_rule('/github/auth/', 'github_auth', github_auth.github_auth)

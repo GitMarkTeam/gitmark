@@ -10,6 +10,7 @@ from flask_principal import Identity, AnonymousIdentity, identity_changed
 from . import models, forms, github_auth
 from main import models as main_models
 from .permissions import admin_permission, su_permission
+from utils.misc import send_user_confirm_mail
 from gitmark.config import GitmarkSettings
 
 default_user_image = GitmarkSettings['default_user_image']
@@ -326,6 +327,16 @@ class Password(MethodView):
         data['password_form'] = password_form
         data['password_form2'] = password_form2
         data['user_form'] = user_form
+        data['user'] = current_user
+
+        email_resend_flag = False
+        if current_user.confirm_email_sent_time and (datetime.datetime.now()-current_user.confirm_email_sent_time).seconds < 3600:
+            email_resend_flag = True
+
+        # now = datetime.datetime.now()
+        # print current_user.confirm_email_sent_time, now, now-current_user.confirm_email_sent_time
+
+        data['email_resend_flag'] = email_resend_flag
 
         return render_template(self.template_name, **data)
 
@@ -382,5 +393,28 @@ class Password(MethodView):
 
                 return redirect(url_for('accounts.password'))
 
+        if request.form.get('email'):
+            if current_user.email:
+                token = current_user.generate_confirmation_token()
+                send_user_confirm_mail(current_user.email, current_user, token)
+                current_user.confirm_email_sent_time = datetime.datetime.now()
+                current_user.save()
+                flash('Confirmation message has been sent, please check your email to confirm your account')
+                # return 'sending confirm email'
+
         return self.get(password_form=password_form, password_form2=password_form2, user_form=user_form)
+
+class ConfirmEmail(MethodView):
+    decorators = [login_required]
+
+    def get(self, token):
+        if current_user.is_email_confirmed:
+            return redirect(url_for('accounts.password'))
+
+        if current_user.confirm_email(token):
+            flash('Your email has been confirmed', 'success')
+        else:
+            flash('The confirmation link is invalid or has expired', 'error')
+
+        return redirect(url_for('accounts.password'))
 

@@ -4,6 +4,7 @@ from flask import Flask
 from flask_mongoengine import MongoEngine
 from flask_login import LoginManager
 from flask_principal import Principal 
+from flask_mail import Mail
 
 from celery import Celery
 from .config import config
@@ -17,6 +18,7 @@ login_manager.session_protection = 'basic'
 login_manager.login_view = 'accounts.login'
 
 principals = Principal()
+mail = Mail()
 
 
 # def create_app():
@@ -50,6 +52,7 @@ def create_app():
     db.init_app(app)
     login_manager.init_app(app)
     principals.init_app(app)
+    mail.init_app(app)
 
 
     return app

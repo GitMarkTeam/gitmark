@@ -1,6 +1,10 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import datetime
+from flask import current_app
 from flask_login import UserMixin
 from werkzeug.security import generate_password_hash, check_password_hash
+from itsdangerous import TimedJSONWebSignatureSerializer
 from gitmark import db, login_manager
 
 
@@ -34,6 +38,7 @@ class User(UserMixin, db.Document):
     social_networks = db.DictField(default=SOCIAL_NETWORKS)
     homepage_url = db.URLField()
     avatar_url = db.URLField()
+    confirm_email_sent_time = db.DateTimeField()
 
     @property
     def password(self):
@@ -45,6 +50,22 @@ class User(UserMixin, db.Document):
 
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
+
+    def generate_confirmation_token(self, expiration=3600):
+        serializer = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'], expiration)
+        return serializer.dumps({'confirm':self.username})
+
+    def confirm_email(self, token, expiration=3600):
+        s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
+        try:
+            data = s.loads(token)
+        except Exception, e:
+            return False
+        if data.get('confirm') != self.username:
+            return False
+        self.is_email_confirmed = True
+        self.save()
+        return True
 
     def get_id(self):
         try:
