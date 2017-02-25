@@ -5,6 +5,7 @@ from flask_mongoengine import MongoEngine
 from flask_login import LoginManager
 from flask_principal import Principal 
 from flask_mail import Mail
+from flask_admin import Admin
 
 from celery import Celery
 from .config import config
@@ -41,6 +42,11 @@ mail = Mail()
 
 #     return app
 
+def init_admin(app):
+    from model_admin import GeneralAdminIndexView, register_admin_views
+    admin = Admin(app, name='GitMark Admin', index_view=GeneralAdminIndexView(url='/model-admin'))
+    register_admin_views(admin)
+
 def create_app():
     config_name = os.getenv('config') or 'default'
     app = Flask(__name__, 
@@ -53,6 +59,8 @@ def create_app():
     login_manager.init_app(app)
     principals.init_app(app)
     mail.init_app(app)
+
+    init_admin(app)
 
 
     return app
