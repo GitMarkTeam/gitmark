@@ -83,8 +83,8 @@ class Config(object):
     # email server
     #########################
     # MAIL_SERVER = 'smtp.gmail.com'
-    MAIL_SERVER = 'smtp.mxhichina.com'
-    MAIL_PORT = 465
+    MAIL_SERVER = os.environ.get('MAIL_SERVER') or 'smtp.mxhichina.com'
+    MAIL_PORT = int(os.environ.get('MAIL_PORT', 465))
     MAIL_USE_TLS = False
     MAIL_USE_SSL = True
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
