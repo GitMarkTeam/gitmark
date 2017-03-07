@@ -53,6 +53,13 @@
         {% endfor %}
         </ul>
 
+        {% if not current_user.is_authenticated %}
+            <hr>
+
+            <strong>Share your GitHub collections? 
+            Please <a href="{{ url_for('accounts.login') }}">login</a> or <a href="{{ url_for('accounts.register') }}">register</a></strong>
+
+        {% endif %}
     </div>
 </div>
 {% endblock %}
