@@ -50,7 +50,7 @@ mongo:
   image: mongo:3.2
 
   volumes:
-    - /mongo/data
+    - /data/db
 
 redis:
   # restart: always
