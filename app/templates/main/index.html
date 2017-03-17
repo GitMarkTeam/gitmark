@@ -114,14 +114,17 @@
             {% for starred_repo in starred_repos[:5] %}
             <div class="row">
                 <div class="col-md-12">
-                    <p class="lead"><a href="{{ starred_repo.link }}">{{ starred_repo.full_name}}</a></p>
+                    <p class="lead"><a href="{{ starred_repo.link }}" target="_blank">
+                        <strong>{{ starred_repo.full_name}}</strong></a></p>
                     <p>{{ starred_repo.desc}}</p>
                     <p><span class="label label-default"><small>{{ starred_repo.language }}</small></span></p>
                 </div>
             </div>
         {% endfor %}
-        <br>
-        {% if starred_repos.count() > 5%}<a href="{{ starred_repos_url }}">See All</a>{% endif %}
+        <br><br>
+        {% if starred_repos.count() > 5%}
+            <a href="{{ starred_repos_url }}"><button class="btn btn-primary" type="button">See All</button></a>
+        {% endif %}
         </div>
         
         
@@ -131,14 +134,18 @@
         {% for collection in collections[:5] %}
             <div class="row">
                 <div class="col-md-12">
-                    <p class="lead"><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">{{ collection.name }}</a></p>
+                    <p class="lead"><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">
+                        <strong>{{ collection.name }}</strong></a></p>
                     <p>{{ collection.description}}</p>
                 </div>
             </div>
 
         {% endfor %}
 
-        {% if collections.count() > 5%}<a href="{{ collections_url }}">See All</a>{% endif %}
+        <br>
+        {% if collections.count() > 5%}
+            <a href="{{ collections_url }}"><button class="btn btn-primary" type="button">See All</button></a>
+        {% endif %}
         
     </div>
 </div>
