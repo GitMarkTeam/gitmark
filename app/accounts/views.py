@@ -154,12 +154,14 @@ class Users(MethodView):
     template_name = 'accounts/users.html'
     def get(self):
         roles_raw = models.ROLES
-        roles = [role[1] for role in roles_raw]
+        # roles = [role[1] for role in roles_raw]
+        roles = ['superuser']
+        roles.extend([role[1] for role in roles_raw])
         current_role = request.args.get('current_role')
 
         users = models.User.objects.all()
         if current_role:
-            users = users.filter(role=current_role)
+            users = users.filter(role=current_role) if not current_role == 'superuser' else users.filter(is_superuser=True)
         data = {
             'users': users,
             'roles': roles,
