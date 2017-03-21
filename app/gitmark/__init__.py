@@ -19,7 +19,7 @@ login_manager.login_view = 'accounts.login'
 
 principals = Principal()
 mail = Mail()
-celery_app = Celery(__name__, broker=Config.BROKER_URL)
+celery_app = Celery(__name__)
 
 
 def init_admin(app):
