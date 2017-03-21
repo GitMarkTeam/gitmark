@@ -176,7 +176,7 @@ def github_login_behavior():
     user.last_login = datetime.datetime.now
     user.save()
 
-    url = url_for('accounts.login')
+    url = url_for('main.index')
     return redirect(url)
 
 def github_link_account_behavior():
@@ -193,6 +193,11 @@ def github_link_account_behavior():
     email = github_user.get('email')
     github_url = github_user.get('html_url')
     github_avatar_url = github_user.get('avatar_url')
+
+    if len(models.User(github_username=username)) > 0:
+        msg = 'This GitHub account({0}) has been binded to another user'.format(username)
+        flash(msg, 'danger')
+        return redirect(url_for('main.index'))
 
     if not current_user.avatar_url:
         avatar_name = 'github_avatar_{0}.jpeg'.format(username)
