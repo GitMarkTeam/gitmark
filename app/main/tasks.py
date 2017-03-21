@@ -4,7 +4,7 @@
 from __future__ import print_function
 import requests
 
-from gitmark import create_app, make_celery, celery_app
+from gitmark import celery_app
 from gitmark.config import GitmarkSettings
 
 from utils import github_api
