@@ -1,11 +1,12 @@
 from flask import Blueprint
 
 from . import views
+from utils import errors
 
 main = Blueprint('main', __name__)
 
-# main.add_url_rule('/hello/', 'hello', views.hello)
-# main.add_url_rule('/', 'index', views.index)
+main.errorhandler(404)(errors.page_not_found)
+main.errorhandler(401)(errors.handle_unauthorized)
 main.add_url_rule('/', view_func=views.IndexView.as_view('index'))
 main.add_url_rule('/enterprise/', view_func=views.EnterpriseView.as_view('enterprise'))
 main.add_url_rule('/users/<username>/', view_func=views.UserView.as_view('user_view'))

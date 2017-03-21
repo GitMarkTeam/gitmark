@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}404 Not Found{% endblock %}
+
+{%block main %}
+<div class="col-md-8 col-md-offset-2">
+    <div class="row">
+        <h2>404 Error</h2><br>
+        {% if not msg %}
+            {% set msg='The content does not exist!' %}
+        {% endif %}
+        <p class="lead">{{ msg }}</p>
+    </div>
+    
+</div>
+{% endblock %}

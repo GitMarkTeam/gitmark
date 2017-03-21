@@ -294,7 +294,8 @@ class CollectionView(MethodView):
     def get(self, collection_id):
         collection = models.Collection.objects(id=collection_id).first()
         if (not collection) or (collection.is_private and current_user.is_anonymous):
-            return 'no collection', 404
+            # return 'no collection', 404
+            abort(404, 'No collection detail found')
 
         data = {'cur_collection': collection, 'collections':None}
 
@@ -311,7 +312,8 @@ class CollectionView(MethodView):
         collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
 
         if not collection:
-            return 'No collection found', 404
+            # return 'No collection found', 404
+            abort(404, 'No collection found')
 
         collection.modify(pull_all__repos=collection.repos)
         collection.modify(set__last_update=datetime.now())
