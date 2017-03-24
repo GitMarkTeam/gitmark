@@ -50,22 +50,22 @@
 
         <h4>Social Network</h4>
             {% if user.social_networks['twitter']['url'] %}
-                <a href='{{ user.social_networks["twitter"]["url"] }}'><i class="fa fa-twitter fa-lg"></i></a> &nbsp;
+                <a href='{{ user.social_networks["twitter"]["url"] }}' target="_blank"><i class="fa fa-twitter fa-lg"></i></a> &nbsp;
             {% else %}
                 <i class="fa fa-twitter fa-lg"></i> &nbsp;
             {% endif %}
             {% if user.social_networks['weibo']['url'] %}
-                <a href='{{ user.social_networks["weibo"]["url"] }}'><i class="fa fa-weibo fa-lg"></i></a> &nbsp;
+                <a href='{{ user.social_networks["weibo"]["url"] }}' target="_blank"><i class="fa fa-weibo fa-lg"></i></a> &nbsp;
             {% else %}
                 <i class="fa fa-weibo fa-lg"></i> &nbsp;
             {% endif %}
             {% if user.social_networks['facebook']['url'] %}
-                <a href='{{ user.social_networks["facebook"]["url"] }}'><i class="fa fa-facebook fa-lg"></i></a> &nbsp;
+                <a href='{{ user.social_networks["facebook"]["url"] }}' target="_blank"><i class="fa fa-facebook fa-lg"></i></a> &nbsp;
             {% else %}
                 <i class="fa fa-facebook fa-lg"></i> &nbsp;
             {% endif %}
             {% if user.social_networks['linkedin']['url'] %}
-                <a href='{{ user.social_networks["linkedin"]["url"] }}'><i class="fa fa-linkedin fa-lg"></i></a> &nbsp;
+                <a href='{{ user.social_networks["linkedin"]["url"] }}' target="_blank"><i class="fa fa-linkedin fa-lg"></i></a> &nbsp;
             {% else %}
                 <i class="fa fa-linkedin fa-lg"></i> &nbsp;
             {% endif %}
