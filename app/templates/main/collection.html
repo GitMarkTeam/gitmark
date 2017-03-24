@@ -11,12 +11,15 @@
             </ol>
         </div>
         
+        {% if can_edit %}
         <div class="row">
             <div class="btn-group" role="group" aria-label="...">
               <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
               <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail', collection_id=cur_collection.id) }}" class="clear"><i class="fa fa-trash"></i> Clear</a></button>
             </div>
         </div>
+        {% endif %}
+        
         <div class="row">
             {% for repo in cur_collection.repos %}
             <div class="col-md-9">
@@ -24,8 +27,10 @@
                 <p>{{ repo.get('desc')}}</p>
                 <p>
                     <span class="label label-default"><small>{{repo.get('language')}}</small></span> &nbsp;
+                    {% if can_edit %}
                     <i class="fa fa-star"></i> &nbsp;
                     <a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}?rm-repo=true&full_name={{repo.get('full_name')}}" class="rm-repo"><i class="fa fa-trash"></i></a>
+                    {% endif %}
                 </p>
                 <hr>
             </div>

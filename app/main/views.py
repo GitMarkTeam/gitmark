@@ -293,18 +293,21 @@ class CollectionView(MethodView):
     template_name = 'main/collection.html'
     def get(self, collection_id):
         collection = models.Collection.objects(id=collection_id).first()
-        if (not collection) or (collection.is_private and current_user.is_anonymous):
+        if (not collection) or (collection.is_private and (current_user.is_anonymous or current_user.username!=collection.owner)):
             # return 'no collection', 404
             abort(404, 'No collection detail found')
 
         data = {'cur_collection': collection, 'collections':None}
 
-        if not current_user.is_anonymous:
+        can_edit = False
+        if not current_user.is_anonymous and current_user.username == collection.owner:
             collections = models.Collection.objects(owner=collection.owner)
+            can_edit = True
         else:
             collections = models.Collection.objects(owner=collection.owner, is_private=False)
         
         data['collections'] = collections
+        data['can_edit'] = can_edit
 
         return render_template(self.template_name, **data)
 
