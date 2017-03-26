@@ -4,6 +4,7 @@
 <div class="row">
     <div class="col-md-10 col-md-offset-1">
 
+    {% if not following %}
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-collection">
       Add Collection 
@@ -31,6 +32,7 @@
         </div>
       </div>
     </div>
+    {% endif %}
 
     {% set render_is_private_dict = {True:'<i class="fa fa-lock" aria-hidden="true"></i>'|safe, False: '<i class="fa fa-unlock" aria-hidden="true"></i>'|safe} %}
 
@@ -39,10 +41,12 @@
             <th>No.</th>
             <th>Name</th>
             <th>Description</th>
-            <th>Visiblity</th>
             <th>Create Time</th>
             <th>Update Time</th>
-            <th>Actions</th>
+            {% if not following %}
+              <th style="text-align: center;">Visiblity</th>
+              <th style="text-align: center;">Actions</th>
+            {% endif %}
         </thead>
         <tbody>
         {% for collection in collections %}
@@ -50,14 +54,19 @@
             <td>{{ loop.index }}</td>
             <td><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">{{ collection.name }}</a></td>
             <td>{{ collection.description|default('No description yet', true) }}</td>
-            <td>{{ render_is_private_dict.get(collection.is_private) }}</td>
             <td>{{ collection.create_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
             <td>{{ collection.last_update.strftime('%Y-%m-%d %H:%M:%S') }}</td>
-            <td>
-                <a href="{{ url_for('main.edit_collection', collection_id=collection.id) }}"><i class="fa fa-pencil-square-o"></i></a>
+            {% if not following %}
+            <td style="text-align: center;">{{ render_is_private_dict.get(collection.is_private) }}</td>
+            <td style="text-align: center;">
+                <a href="{{ url_for('main.edit_collection', collection_id=collection.id) }}"><i class="fa fa-pencil-square-o"></i></a> &nbsp;
                 <a href="{{ url_for('main.edit_collection', collection_id=collection.id) }}" class="del-collection" data-id={{ collection.id }}><i class="fa fa-trash"></i></a>
             </td>
+            {% endif %}
         </tr>
+        {% else %}
+        <tr><td colspan="6">No collection yet</td></tr>
+        
             
         {% endfor %}
         </tbody>

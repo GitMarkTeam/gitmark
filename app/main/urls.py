@@ -18,6 +18,7 @@ main.add_url_rule('/users/<username>/starred-repos/', view_func=views.StarredRep
 main.add_url_rule('/all-repos/', view_func=views.ReposView.as_view('all_repos'))
 main.add_url_rule('/search/github/', view_func=views.GitHubResultView.as_view('github_result'))
 main.add_url_rule('/user/collections/', view_func=views.MyCollectionsView.as_view('my_collections'))
+main.add_url_rule('/user/collections/following/', view_func=views.MyCollectionsView.as_view('following_collections'), defaults={'following':True})
 main.add_url_rule('/users/<username>/collections/', view_func=views.UserCollectionsView.as_view('user_collections'))
 main.add_url_rule('/user/collections/<collection_id>/edit/', view_func=views.MyCollectionEditView.as_view('edit_collection'))
 main.add_url_rule('/user/collections/<collection_id>/detail/', view_func=views.CollectionView.as_view('collection_detail'))

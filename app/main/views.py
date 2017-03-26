@@ -206,12 +206,15 @@ class MyCollectionsView(MethodView):
     decorators = [login_required]
     template_name = 'main/collections.html'
 
-    def get(self, form=None):
-        if not form:
-            form = forms.CollectionForm()
-        collections = models.Collection.objects(owner=current_user.username)
+    def get(self, form=None, following=False):
+        if following:
+            collections = models.Collection.objects(followers=current_user.username)
+        else:
+            if not form:
+                form = forms.CollectionForm()
+            collections = models.Collection.objects(owner=current_user.username)
 
-        data = { 'collections':collections, 'form':form }
+        data = { 'collections':collections, 'form':form, 'following':following }
 
         return render_template(self.template_name, **data)
 
@@ -229,6 +232,7 @@ class MyCollectionsView(MethodView):
             return redirect(url_for('main.my_collections'))
 
         return self.get(form=form)
+
 
 class UserCollectionsView(MethodView):
     template_name = 'main/collections_user_public.html'

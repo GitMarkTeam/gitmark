@@ -52,6 +52,7 @@ class Collection(db.Document):
     repos = db.ListField(db.DictField())
     last_update = db.DateTimeField()
     create_date = db.DateTimeField()
+    followers = db.ListField(db.StringField())
 
     meta = {
         'allow_inheritance': True,
