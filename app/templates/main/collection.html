@@ -4,23 +4,42 @@
 
 <div class="row">
     <div class="col-md-8 col-md-offset-1">
-        <div class="row">
-            <ol class="breadcrumb">
-              <li><a href="{{ url_for('main.my_collections') }}">Collections</a></li>
-              <li class="active">{{ cur_collection.name }}</li>
-            </ol>
-        </div>
-        
         {% if can_edit %}
-        <div class="row">
-            <div class="btn-group" role="group" aria-label="...">
-              <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
-              <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail', collection_id=cur_collection.id) }}" class="clear"><i class="fa fa-trash"></i> Clear</a></button>
+            <div class="row">
+                <ol class="breadcrumb">
+                  <li><a href="{{ url_for('main.my_collections') }}">Collections</a></li>
+                  <li class="active">{{ cur_collection.name }}</li>
+                </ol>
             </div>
-        </div>
+            
+            <div class="row">
+                <div class="btn-group" role="group" aria-label="...">
+                  <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
+                  <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail', collection_id=cur_collection.id) }}" class="clear"><i class="fa fa-trash"></i> Clear</a></button>
+                </div>
+            </div>
+        {% else %}
+            <div class="row">
+                <blockquote>
+                  <h3 class="text-capitalize">{{ cur_collection.name }}</h3>
+                  <em>{{ cur_collection.description }}</em>
+                  <br><br>
+                  <footer>Maintained by <cite title="Source Title">{{ cur_collection.owner }}</cite></footer>
+                </blockquote>
+                
+            </div>
         {% endif %}
         
         <div class="row">
+            {% if not can_edit %}
+                <form method="POST">
+                {% if following %}
+                    <button type="submit" class="btn btn-primary" name="unfollow" value="unfollow">Unfollow</button>
+                {% else %}
+                    <button type="submit" class="btn btn-primary" name="follow" value="follow">Follow</button>
+                {% endif %}
+                </form>
+            {% endif %}
             {% for repo in cur_collection.repos %}
             <div class="col-md-9">
                 <h3><a href="{{ repo.get('link') }}" target="_blank" >{{ repo.get('full_name')}}</a></h3>

@@ -207,14 +207,11 @@ class MyCollectionsView(MethodView):
     template_name = 'main/collections.html'
 
     def get(self, form=None, following=False):
-        if following:
-            collections = models.Collection.objects(followers=current_user.username)
-        else:
-            if not form:
-                form = forms.CollectionForm()
-            collections = models.Collection.objects(owner=current_user.username)
+        if not form:
+            form = forms.CollectionForm()
+        collections = models.Collection.objects(owner=current_user.username)
 
-        data = { 'collections':collections, 'form':form, 'following':following }
+        data = { 'collections':collections, 'form':form }
 
         return render_template(self.template_name, **data)
 
@@ -237,8 +234,11 @@ class MyCollectionsView(MethodView):
 class UserCollectionsView(MethodView):
     template_name = 'main/collections_user_public.html'
 
-    def get(self, username):
-        collections = models.Collection.objects(owner=username, is_private=False)
+    def get(self, username=None, following=False):
+        if following:
+            collections = models.Collection.objects(followers=current_user.username, is_private=False)
+        else:
+            collections = models.Collection.objects(owner=username, is_private=False)
 
         data = { 'collections':collections}
 
@@ -304,16 +304,37 @@ class CollectionView(MethodView):
         data = {'cur_collection': collection, 'collections':None}
 
         can_edit = False
+        following = False
+
         if not current_user.is_anonymous and current_user.username == collection.owner:
             collections = models.Collection.objects(owner=collection.owner)
             can_edit = True
         else:
             collections = models.Collection.objects(owner=collection.owner, is_private=False)
+            if not current_user.is_anonymous and current_user.username in collection.followers:
+                following = True
         
         data['collections'] = collections
         data['can_edit'] = can_edit
+        data['following'] = following
 
         return render_template(self.template_name, **data)
+
+    def post(self, collection_id):
+        if current_user.is_anonymous:
+            msg = 'You need to login before follow the collection'
+            flash(msg, 'warning')
+            return redirect(url_for('accounts.login'))
+        collection = models.Collection.objects.get_or_404(id=collection_id)
+        if request.form.get('follow'):
+            collection.modify(add_to_set__followers=current_user.username)
+            msg = 'Succeed to follow this collection'
+            
+        else:
+            collection.modify(unset__followers=current_user.username)
+            msg = 'Succeed to unfollow this collection'
+        flash(msg, 'success')
+        return redirect(url_for('main.collection_detail', collection_id=collection_id))
 
     def delete(self, collection_id):
         collection = models.Collection.objects(owner=current_user.username, id=collection_id).first()
