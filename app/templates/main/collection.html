@@ -24,7 +24,7 @@
                   <h3 class="text-capitalize">{{ cur_collection.name }}</h3>
                   <em>{{ cur_collection.description }}</em>
                   <br><br>
-                  <footer>Maintained by <cite title="Source Title">{{ cur_collection.owner }}</cite></footer>
+                  <footer>Maintained by <cite title="{{ cur_collection.owner }}"><a href="{{ url_for('main.user_view', username=cur_collection.owner) }}">{{ cur_collection.owner }}</a></cite></footer>
                 </blockquote>
                 
             </div>

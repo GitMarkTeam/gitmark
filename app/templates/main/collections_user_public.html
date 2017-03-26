@@ -20,7 +20,10 @@
               <td>{{ collection.create_date.strftime('%Y-%m-%d %H:%M:%S') }}</td>
               <td>{{ collection.last_update.strftime('%Y-%m-%d %H:%M:%S') }}</td>
           </tr>
-              
+          {% else %}
+          <tr>
+            <td colspan="5">No collection yet</td>
+          </tr>    
           {% endfor %}
           </tbody>
       </table>

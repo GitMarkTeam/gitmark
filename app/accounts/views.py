@@ -19,6 +19,8 @@ class LoginView(MethodView):
     template_name = 'accounts/login.html'
 
     def get(self, form=None):
+        if not current_user.is_anonymous:
+            return redirect(url_for('main.index'))
         if not form:
             form = forms.LoginForm()
         return render_template(self.template_name, form=form)
@@ -89,6 +91,9 @@ class RegistrationView(MethodView):
     template_name = 'accounts/registration.html'
 
     def get(self, form=None, create_su=False):
+        if not current_user.is_anonymous:
+            return redirect(url_for('main.index'))
+            
         if not GitmarkSettings['allow_registration']:
             msg = 'Register is forbidden, please contact administrator'
             return msg
