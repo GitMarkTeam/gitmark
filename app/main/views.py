@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-import json
+import json, os
 try:
     from itertools import filterfalse
 except ImportError:
@@ -12,7 +12,7 @@ except ImportError:
 import requests
 
 from flask import request, redirect, render_template, url_for, abort, flash, session, jsonify
-from flask import current_app, make_response
+from flask import current_app, make_response, send_from_directory
 from flask.views import MethodView
 
 from flask_login import login_required, current_user
@@ -330,9 +330,17 @@ class CollectionView(MethodView):
             collection.modify(add_to_set__followers=current_user.username)
             msg = 'Succeed to follow this collection'
             
-        else:
+        elif request.form.get('unfollow'):
             collection.modify(unset__followers=current_user.username)
             msg = 'Succeed to unfollow this collection'
+        elif request.form.get('export') and current_user.username==collection.owner:
+            msg = 'Ready to export'
+            if request.form.get('export-collection')=='json':
+                msg = 'Ready to export as json'
+                return self.export_as_json(collection)
+            else:
+                msg = 'Ready to export as markdown'
+                return self.export_as_markdown(collection)
         flash(msg, 'success')
         return redirect(url_for('main.collection_detail', collection_id=collection_id))
 
@@ -353,6 +361,37 @@ class CollectionView(MethodView):
         flash(msg, 'success')
 
         return redirect(url_for('main.my_collections'))
+
+    def export_as_json(self, collection):
+        data = collection.to_dict()
+        # return jsonify(data)
+        export_path = current_app._get_current_object().config['EXPORT_PATH']
+        file_name = '{0}-{1}.json'.format(collection.owner, collection.name)
+        file_fullname = os.path.join(export_path, file_name)
+
+        import io, sys
+        if sys.version_info < (3, 0):
+            with io.open(file_fullname, 'w', encoding='utf-8') as f:
+                # f.write(unicode(json.dumps(post_list, ensure_ascii=False, indent=4)))
+                f.write(json.dumps(data, ensure_ascii=False, indent=4))
+        else:
+            with open(file_fullname, 'w') as fs:
+                json.dump(data, fs, ensure_ascii=False, indent=4)
+
+        return send_from_directory(export_path, file_name, as_attachment=True)
+
+    def export_as_markdown(self, collection):
+        data = collection.to_dict()
+        export_path = current_app._get_current_object().config['EXPORT_PATH']
+        file_name = '{0}-{1}.md'.format(collection.owner, collection.name)
+        file_fullname = os.path.join(export_path, file_name)
+        template_name = 'misc/export_collection.md'
+        content = render_template(template_name, **data)
+
+        with open(file_fullname, 'w') as fs:
+            fs.write(content)
+        return send_from_directory(export_path, file_name, as_attachment=True)
+        return content
 
 class CollectionDetailEditView(MethodView):
     template_name = 'main/collection_detail_edit.html'

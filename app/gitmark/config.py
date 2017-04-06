@@ -63,6 +63,10 @@ class Config(object):
 
     TEMPLATE_PATH = os.path.join(BASE_DIR, 'templates').replace('\\', '/')
     STATIC_PATH = os.path.join(BASE_DIR, 'static').replace('\\', '/')
+    EXPORT_PATH = os.path.join(BASE_DIR, 'exports').replace('\\', '/')
+
+    if not os.path.exists(EXPORT_PATH):
+        os.makedirs(EXPORT_PATH)
 
 
     ########################

@@ -66,6 +66,23 @@ class Collection(db.Document):
         self.last_update = datetime.now()
         return super(Collection, self).save(*args, **kwargs)
 
+    def to_dict(self, *args, **kwargs):
+        def updata_field(dict_):
+            dict_['id'] = str(dict_['id'])
+            return dict_
+        data = {
+            'name': self.name,
+            'description': self.description,
+            'owner': self.owner,
+            'is_private': self.is_private,
+            'repos': map(updata_field, self.repos),
+            'last_update': self.last_update.strftime('%Y-%m-%d %H:%M:%S'),
+            'create_date': self.create_date.strftime('%Y-%m-%d %H:%M:%S'),
+            'followers': self.followers,
+        }
+
+        return data
+
     def __unicode__(self):
         return u'{0} -> {1}'.format(self.owner, self.name)
 

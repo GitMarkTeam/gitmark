@@ -14,10 +14,52 @@
             
             <div class="row">
                 <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}"><i class="fa fa-pencil-square-o"></i> Edit</a></button>
-                  <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail', collection_id=cur_collection.id) }}" class="clear"><i class="fa fa-trash"></i> Clear</a></button>
+                  <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail_edit', collection_id=cur_collection.id) }}"><i class="fa fa-pencil-square-o"></i> Edit</a></button> 
+
+                  <button type="button" class="btn btn-primary"><a href="{{ url_for('main.collection_detail', collection_id=cur_collection.id) }}" class="clear"><i class="fa fa-trash"></i> Clear</a></button> 
+
+                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#export-collection"><i class="fa fa-external-link"></i> Export</button>
                 </div>
             </div>
+
+            <!-- Modal -->
+            <div class="modal fade" id="export-collection" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">Export Collection</h4>
+                  </div>
+                  <form method="POST">
+                      <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-6 col-md-offset-3">
+                                <p>Export as:</p>
+                                <div class="radio">
+                                  <label>
+                                    <input type="radio" name="export-collection" id="markdown" value="markdown" checked>
+                                    markdown
+                                  </label>
+                                </div>
+                                <div class="radio">
+                                  <label>
+                                    <input type="radio" name="export-collection" id="json" value="json">
+                                    json
+                                  </label>
+                                </div>
+                            </div>
+                        </div>
+    
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="export" value="export">Export</button>
+                      </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+
         {% else %}
             <div class="row">
                 <blockquote>
@@ -93,6 +135,9 @@
 
 {% block js %}
 <script type="text/javascript">
+    $('#export-collection').on('shown.bs.modal', function () {
+        $('#myInput').focus()
+      });
     $('.rm-filter').on('click', function (event) {
         location.href = "{{ url_for('main.my_collections') }}";
         return false;
