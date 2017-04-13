@@ -324,7 +324,10 @@ class CollectionView(MethodView):
         if current_user.is_anonymous:
             msg = 'You need to login before follow the collection'
             flash(msg, 'warning')
-            return redirect(url_for('accounts.login'))
+            login_url = url_for('accounts.login')
+            next_url = url_for('main.collection_detail', collection_id=collection_id)
+            url = '{0}?next={1}'.format(login_url, next_url)
+            return redirect(url)
         collection = models.Collection.objects.get_or_404(id=collection_id)
         if request.form.get('follow'):
             collection.modify(add_to_set__followers=current_user.username)
