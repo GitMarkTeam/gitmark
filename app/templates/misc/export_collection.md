@@ -10,7 +10,7 @@ update time: {{ last_update }}
 
 {% for repo in repos %}
 
-### [{{ repo.get('full_name') }}](repo.get('link'))
+### [{{ repo.get('full_name') }}]({{ repo.get('link') }})
 
 {{ repo.get('desc') }}
 
