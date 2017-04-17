@@ -4,7 +4,7 @@
 from flask_admin import AdminIndexView
 from flask_login import current_user
 
-from admin import register_admin_views
+from .admin import register_admin_views
 
 # Create customized index view class
 class GeneralAdminIndexView(AdminIndexView):

@@ -1,3 +1,4 @@
+import sys
 from datetime import datetime
 from flask import url_for
 
@@ -75,7 +76,7 @@ class Collection(db.Document):
             'description': self.description,
             'owner': self.owner,
             'is_private': self.is_private,
-            'repos': map(updata_field, self.repos),
+            'repos': map(updata_field, self.repos) if sys.version_info < (3, 0) else list(map(updata_field, self.repos)),
             'last_update': self.last_update.strftime('%Y-%m-%d %H:%M:%S'),
             'create_date': self.create_date.strftime('%Y-%m-%d %H:%M:%S'),
             'followers': self.followers,

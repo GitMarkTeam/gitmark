@@ -59,7 +59,7 @@ class User(UserMixin, db.Document):
         s = TimedJSONWebSignatureSerializer(current_app.config['SECRET_KEY'])
         try:
             data = s.loads(token)
-        except Exception, e:
+        except Exception:
             return False
         if data.get('confirm') != self.username:
             return False

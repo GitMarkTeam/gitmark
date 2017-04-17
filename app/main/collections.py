@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-import json, os
+import json, os, io, sys
 
 import requests
 
@@ -190,12 +190,12 @@ class CollectionView(MethodView):
 
     def export_as_json(self, collection):
         data = collection.to_dict()
+        # print(data, type(data))
         # return jsonify(data)
         export_path = current_app._get_current_object().config['EXPORT_PATH']
         file_name = '{0}-{1}.json'.format(collection.owner, collection.name)
         file_fullname = os.path.join(export_path, file_name)
 
-        import io, sys
         if sys.version_info < (3, 0):
             with io.open(file_fullname, 'w', encoding='utf-8') as f:
                 # f.write(unicode(json.dumps(post_list, ensure_ascii=False, indent=4)))
@@ -215,7 +215,11 @@ class CollectionView(MethodView):
         content = render_template(template_name, **data)
 
         with open(file_fullname, 'w') as fs:
-            fs.write(content.encode('utf8'))
+            if sys.version_info < (3, 0):
+                fs.write(content.encode('utf8'))
+            else:
+                fs.write(content)
+
         return send_from_directory(export_path, file_name, as_attachment=True)
         return content
 
