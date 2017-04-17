@@ -215,7 +215,7 @@ class CollectionView(MethodView):
         content = render_template(template_name, **data)
 
         with open(file_fullname, 'w') as fs:
-            fs.write(content)
+            fs.write(content.encode('utf8'))
         return send_from_directory(export_path, file_name, as_attachment=True)
         return content
 
