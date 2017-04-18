@@ -3,6 +3,7 @@
 
 from __future__ import print_function
 import os, datetime
+from random import random, randint
 
 from flask import render_template, redirect, request, flash, url_for, current_app, session
 from flask_login import login_user, current_user
@@ -194,7 +195,7 @@ def github_link_account_behavior():
     github_url = github_user.get('html_url')
     github_avatar_url = github_user.get('avatar_url')
 
-    if len(models.User(github_username=username)) > 0:
+    if len(models.User.objects.filter(github_username=username)) > 0:
         msg = 'This GitHub account({0}) has been binded to another user'.format(username)
         flash(msg, 'danger')
         return redirect(url_for('main.index'))

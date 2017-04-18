@@ -70,7 +70,7 @@ class IndexView(MethodView):
         
         elif request.form.get('rm_github'):
             current_user.github_username = ''
-            # current_user.github = ''
+            current_user.github = None
             current_user.save()
 
         
