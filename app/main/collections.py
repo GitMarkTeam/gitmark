@@ -11,6 +11,7 @@ from flask import current_app, make_response, send_from_directory
 from flask.views import MethodView
 
 from flask_login import login_required, current_user
+from mongoengine.queryset.visitor import Q
 
 from . import models, tasks, forms
 from gitmark.config import GitmarkSettings
