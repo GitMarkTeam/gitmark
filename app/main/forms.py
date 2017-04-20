@@ -10,4 +10,5 @@ from . import models
 class CollectionForm(FlaskForm):
     name = StringField()
     is_private = BooleanField(default=False)
+    tags_str = StringField('Tags')
     description = TextAreaField()

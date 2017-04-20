@@ -29,16 +29,26 @@ class MyCollectionsView(MethodView):
     decorators = [login_required]
     template_name = 'main/collections.html'
 
-    def get(self, form=None, following=False):
+    def get(self, form=None, visibility=None):
         if not form:
             form = forms.CollectionForm()
         collections = models.Collection.objects(owner=current_user.username)
+        if visibility == 'public':
+            collections = collections.filter(is_private=False)
+        if visibility == 'private':
+            collections = collections.filter(is_private=True)
 
-        data = { 'collections':collections, 'form':form }
+        tags = collections.distinct('tags')
+
+        cur_tag = request.args.get('tag')
+        if cur_tag:
+            collections = collections.filter(tags=cur_tag)
+
+        data = { 'collections':collections, 'form':form, 'tags': tags, 'cur_tag':cur_tag }
 
         return render_template(self.template_name, **data)
 
-    def post(self):
+    def post(self, visibility=None):
         form = forms.CollectionForm(obj=request.form)
         if form.validate():
             collection = models.Collection()
@@ -77,6 +87,7 @@ class MyCollectionEditView(MethodView):
             return 'no collection', 404
 
         if not form:
+            collection.tags_str = ', '.join(collection.tags)
             form = forms.CollectionForm(obj=collection)
 
         data = {'form':form}
@@ -91,10 +102,12 @@ class MyCollectionEditView(MethodView):
         name = form.name.data
         description = form.description.data
         is_private = form.is_private.data
+        tags_str = form.tags_str.data
 
         collection.name = name
         collection.description = description
         collection.is_private = is_private
+        collection.tags = [ tag.strip() for tag in tags_str.split(',')] if tags_str else None
 
         collection.save()
         msg = 'Succeed to update this collection'

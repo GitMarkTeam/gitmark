@@ -25,6 +25,8 @@ main.add_url_rule('/search/github/', view_func=views.GitHubResultView.as_view('g
 # main.add_url_rule('/user/collections/<collection_id>/detail/edit/search', view_func=views.Search4Collection.as_view('collection_detail_edit_search'))
 
 main.add_url_rule('/user/collections/', view_func=collections.MyCollectionsView.as_view('my_collections'))
+main.add_url_rule('/user/collections/public/', view_func=collections.MyCollectionsView.as_view('my_public_collections'), defaults={'visibility':'public'})
+main.add_url_rule('/user/collections/private/', view_func=collections.MyCollectionsView.as_view('my_private_collections'), defaults={'visibility':'private'})
 main.add_url_rule('/user/collections/following/', view_func=collections.UserCollectionsView.as_view('following_collections'), defaults={'following':True})
 main.add_url_rule('/users/<username>/collections/', view_func=collections.UserCollectionsView.as_view('user_collections'))
 main.add_url_rule('/user/collections/<collection_id>/edit/', view_func=collections.MyCollectionEditView.as_view('edit_collection'))

@@ -33,6 +33,30 @@
 
     {% set render_is_private_dict = {True:'<i class="fa fa-lock" aria-hidden="true"></i>'|safe, False: '<i class="fa fa-unlock" aria-hidden="true"></i>'|safe} %}
 
+    <br><br>
+    <div>
+      {% if tags %}
+        <strong>Tags: </strong>&nbsp;&nbsp;
+        {% for tag in tags %}
+        <a href="?tag={{ tag }}" class="post-tag">
+            {% if tag == cur_tag %}
+            <span class="label label-warning">
+                {{ tag }}
+                <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
+            </span>
+            
+            {% else %}
+            <span class="label label-default">
+                {{ tag }} 
+            </span>
+            {% endif %}    
+        </a>
+        &nbsp;
+        {% endfor %}
+      {% endif %}
+    </div>
+    
+    <br>
     <table class="table">
         <thead>
             <th>No.</th>
@@ -92,6 +116,11 @@
     });
     return false;
 
-  })
+  });
+  $('.rm-filter').on('click', function (event) {
+
+    location.href = "{{ url_for('main.my_collections') }}";
+    return false;
+  });
 </script>
 {% endblock %}
