@@ -50,10 +50,12 @@ class IndexView(MethodView):
         data['user'] = current_user
         starred_repos = models.Repo.objects(starred_users=current_user.username)
         collections = models.Collection.objects(owner=current_user.username)
+        following_collections = models.Collection.objects(followers=current_user.username)
         
 
         data['starred_repos'] = starred_repos
         data['collections'] = collections
+        data['following_collections'] = following_collections
 
 
         data['is_public'] = False 
@@ -89,10 +91,12 @@ class UserView(MethodView):
         data['user'] = user
         starred_repos = models.Repo.objects(starred_users=username)
         collections = models.Collection.objects(owner=username, is_private=False)
+        following_collections = models.Collection.objects(followers=username)
         
 
         data['starred_repos'] = starred_repos
         data['collections'] = collections
+        data['following_collections'] = following_collections
 
 
         data['is_public'] = True

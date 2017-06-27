@@ -6,9 +6,11 @@
     {% if is_public %}
         {% set starred_repos_url =  url_for('main.user_starred_repos', username=username) %}
         {% set collections_url =  url_for('main.user_collections', username=username) %}
+        {% set following_collections_url =  url_for('main.user_following_collections', username=username) %}
     {% else %}
         {% set starred_repos_url =  url_for('main.starred_repos') %}
         {% set collections_url =  url_for('main.my_collections') %}
+        {% set following_collections_url =  url_for('main.following_collections') %}
     {% endif %}
 
 <div class="row">
@@ -89,21 +91,17 @@
         {% endif %}
 
         <div class="row" style="text-align:center">
-            <div class='col-md-3'>
-                <p class="lead">2048</p>
-                <small>following</small>
-            </div>
-            <div class='col-md-3'>
-                <p class="lead">2048</p>
-                <small>follower</small>
-            </div>
-            <div class='col-md-3'>
+            <div class='col-md-4'>
                 <a href="{{ starred_repos_url }}"><p class="lead">{{ starred_repos | count }}</p></a>
                 <small>starred</small>
             </div>
-            <div class='col-md-3'>
+            <div class='col-md-4'>
                 <a href="{{ collections_url }}"><p class="lead">{{ collections | length }}</p></a>
                 <small>collection</small>
+            </div>
+            <div class='col-md-4'>
+                <a href="{{ following_collections_url }}"><p class="lead">{{ following_collections | length }}</p></a>
+                <small>following</small>
             </div>
         </div>
         
