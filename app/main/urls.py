@@ -29,6 +29,7 @@ main.add_url_rule('/user/collections/public/', view_func=collections.MyCollectio
 main.add_url_rule('/user/collections/private/', view_func=collections.MyCollectionsView.as_view('my_private_collections'), defaults={'visibility':'private'})
 main.add_url_rule('/user/collections/following/', view_func=collections.UserCollectionsView.as_view('following_collections'), defaults={'following':True})
 main.add_url_rule('/users/<username>/collections/', view_func=collections.UserCollectionsView.as_view('user_collections'))
+main.add_url_rule('/users/<username>/collections/following/', view_func=collections.UserCollectionsView.as_view('user_following_collections'), defaults={'following':True})
 main.add_url_rule('/user/collections/<collection_id>/edit/', view_func=collections.MyCollectionEditView.as_view('edit_collection'))
 main.add_url_rule('/user/collections/<collection_id>/detail/', view_func=collections.CollectionView.as_view('collection_detail'))
 main.add_url_rule('/user/collections/<collection_id>/detail/edit/', view_func=collections.CollectionDetailEditView.as_view('collection_detail_edit'))
