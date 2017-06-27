@@ -58,6 +58,9 @@ class MyCollectionsView(MethodView):
             collection.owner = current_user.username
             collection.is_private = form.is_private.data
 
+            tags_str = form.tags_str.data
+            collection.tags = [ tag.strip() for tag in tags_str.split(',')] if tags_str else None
+
             collection.save()
 
             return redirect(url_for('main.my_collections'))
