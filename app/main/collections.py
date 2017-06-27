@@ -70,6 +70,11 @@ class UserCollectionsView(MethodView):
 
     def get(self, username=None, following=False):
         if following:
+            if username:
+                follower = username
+            else:
+                if current_user.is_anonymous:
+                    return redirect(url_for('accounts.login')+'?next={0}'.format(url_for('main.following_collections')))
             collections = models.Collection.objects(followers=current_user.username, is_private=False)
         else:
             collections = models.Collection.objects(owner=username, is_private=False)
