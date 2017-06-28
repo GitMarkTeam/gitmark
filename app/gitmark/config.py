@@ -50,8 +50,10 @@ GitmarkSettings = {
         'base_url': os.environ.get('QINIU_URL'),
     },
     'default_user_image': os.environ.get('DEFAULT_USER_IMAGE') or 'http://gitmark-staff.igevin.info/github_avatar_username.jpeg',
-    
-        
+    'daovoice':{
+        'allow_daovoice': (os.environ.get('allow_daovoice', 'false').lower() == 'true' and os.environ.get('daovoice_app_id') is not None),
+        'app_id': os.environ.get('daovoice_app_id'),
+    }
 }
 
 

@@ -1,7 +1,8 @@
-from flask import Blueprint
+from flask import Blueprint, g
 
 from . import views, collections
 from utils import errors
+from gitmark.config import GitmarkSettings
 
 main = Blueprint('main', __name__)
 
@@ -34,3 +35,11 @@ main.add_url_rule('/user/collections/<collection_id>/edit/', view_func=collectio
 main.add_url_rule('/user/collections/<collection_id>/detail/', view_func=collections.CollectionView.as_view('collection_detail'))
 main.add_url_rule('/user/collections/<collection_id>/detail/edit/', view_func=collections.CollectionDetailEditView.as_view('collection_detail_edit'))
 main.add_url_rule('/user/collections/<collection_id>/detail/edit/search', view_func=collections.Search4Collection.as_view('collection_detail_edit_search'))
+
+
+DAOVOICE = GitmarkSettings['daovoice']
+
+@main.before_app_request
+def before_request():
+    g.allow_daovoice = DAOVOICE['allow_daovoice']
+    g.daovoice_app_id = DAOVOICE['app_id']
