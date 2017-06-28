@@ -231,6 +231,7 @@ class CollectionView(MethodView):
 
     def export_as_markdown(self, collection):
         data = collection.to_dict()
+
         export_path = current_app._get_current_object().config['EXPORT_PATH']
         file_name = '{0}-{1}.md'.format(collection.owner, collection.name)
         file_fullname = os.path.join(export_path, file_name)
