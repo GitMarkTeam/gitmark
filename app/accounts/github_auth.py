@@ -86,7 +86,7 @@ def github_register_behavior():
     github_user = res.json()
     username = github_user.get('login')
     email = github_user.get('email')
-    print('email: {0}'.format(email))
+    # print('email: {0}'.format(email))
     github_url = github_user.get('html_url')
     github_avatar_url = github_user.get('avatar_url')
 
@@ -139,7 +139,7 @@ def github_register_behavior():
     user.email = email
     user.github_username = username
     user.github = github_url
-    user.is_email_confirmed = True
+    user.is_email_confirmed = (email is not None)
     user.avatar_url = avatar_url
     user.save()
 
