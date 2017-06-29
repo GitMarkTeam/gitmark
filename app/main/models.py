@@ -74,7 +74,7 @@ class Collection(db.Document):
             dict_['id'] = str(dict_['id'])
             return dict_
         data = {
-            'id': self.id,
+            'id': str(self.id),
             'name': self.name,
             'description': self.description,
             'owner': self.owner,

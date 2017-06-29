@@ -24,7 +24,11 @@ Original Collection: [{{ name }}]({{ url_for('main.collection_detail', collectio
 
 <small>Language: {{ repo.get('language') }}</small>
 
------------
+{% if not loop.last %}
+        
+---------------------
+
+{% endif %}
 
 
 {% endfor %}
