@@ -54,6 +54,7 @@ class Collection(db.Document):
     last_update = db.DateTimeField()
     create_date = db.DateTimeField()
     followers = db.ListField(db.StringField())
+    follower_count = db.IntField(default=0)
     tags = db.ListField(db.StringField())
 
     meta = {

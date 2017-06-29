@@ -1,6 +1,6 @@
 from flask import Blueprint, g
 
-from . import views, collections
+from . import views, collections, explore
 from utils import errors
 from gitmark.config import GitmarkSettings
 
@@ -17,13 +17,6 @@ main.add_url_rule('/starred-repos/', view_func=views.StarredRepoView.as_view('st
 main.add_url_rule('/users/<username>/starred-repos/', view_func=views.StarredRepoView.as_view('user_starred_repos'))
 main.add_url_rule('/all-repos/', view_func=views.ReposView.as_view('all_repos'))
 main.add_url_rule('/search/github/', view_func=views.GitHubResultView.as_view('github_result'))
-# main.add_url_rule('/user/collections/', view_func=views.MyCollectionsView.as_view('my_collections'))
-# main.add_url_rule('/user/collections/following/', view_func=views.UserCollectionsView.as_view('following_collections'), defaults={'following':True})
-# main.add_url_rule('/users/<username>/collections/', view_func=views.UserCollectionsView.as_view('user_collections'))
-# main.add_url_rule('/user/collections/<collection_id>/edit/', view_func=views.MyCollectionEditView.as_view('edit_collection'))
-# main.add_url_rule('/user/collections/<collection_id>/detail/', view_func=views.CollectionView.as_view('collection_detail'))
-# main.add_url_rule('/user/collections/<collection_id>/detail/edit/', view_func=views.CollectionDetailEditView.as_view('collection_detail_edit'))
-# main.add_url_rule('/user/collections/<collection_id>/detail/edit/search', view_func=views.Search4Collection.as_view('collection_detail_edit_search'))
 
 main.add_url_rule('/user/collections/', view_func=collections.MyCollectionsView.as_view('my_collections'))
 main.add_url_rule('/user/collections/public/', view_func=collections.MyCollectionsView.as_view('my_public_collections'), defaults={'visibility':'public'})
@@ -35,6 +28,8 @@ main.add_url_rule('/user/collections/<collection_id>/edit/', view_func=collectio
 main.add_url_rule('/user/collections/<collection_id>/detail/', view_func=collections.CollectionView.as_view('collection_detail'))
 main.add_url_rule('/user/collections/<collection_id>/detail/edit/', view_func=collections.CollectionDetailEditView.as_view('collection_detail_edit'))
 main.add_url_rule('/user/collections/<collection_id>/detail/edit/search', view_func=collections.Search4Collection.as_view('collection_detail_edit_search'))
+
+main.add_url_rule('/explore/collections/', view_func=explore.ExploreCollectionView.as_view('explore_collection'))
 
 
 DAOVOICE = GitmarkSettings['daovoice']

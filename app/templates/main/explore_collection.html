@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block main %}
+
+<div class="row">
+    <div class="col-md-5 col-md-offset-1">
+        <h3>Recently Updated</h3><hr>
+        {% for collection in recent_collections %}
+        <div class="row">
+            <div class="col-md-12">
+                <p class="lead"><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">
+                        <strong>{{ collection.name }}</strong></a></p>
+                <p><strong>Description</strong>: {{ collection.description}}</p>
+                <p><strong>Maintainer</strong>: <a href="{{ url_for('main.user_view', username=collection.owner) }}">{{ collection.owner }} </a></p>
+                <p><strong>Last Update</strong>: {{ collection.last_update.strftime('%Y-%m-%d') }} </p>
+            </div>
+        </div>
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+    {% else %}
+        No repos yet!
+    {% endfor %}
+    </div>
+    <div class="col-md-5">
+        <h3>Most Followed</h3><hr>
+        {% for collection in most_followed_collections %}
+        <div class="row">
+            <div class="col-md-12">
+                <p class="lead"><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">
+                        <strong>{{ collection.name }}</strong></a></p>
+                <p><strong>Description</strong>: {{ collection.description}}</p>
+                <p><strong>Maintainer</strong>: <a href="{{ url_for('main.user_view', username=collection.owner) }}">{{ collection.owner }} </a></p>
+                <p><strong>Last Update</strong>: {{ collection.last_update.strftime('%Y-%m-%d') }} </p>
+            </div>
+        </div>
+        {% if not loop.last %}
+        <hr>
+        {% endif %}
+    {% else %}
+        No repos yet!
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock%}

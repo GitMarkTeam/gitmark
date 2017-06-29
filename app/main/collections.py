@@ -177,10 +177,14 @@ class CollectionView(MethodView):
         collection = models.Collection.objects.get_or_404(id=collection_id)
         if request.form.get('follow'):
             collection.modify(add_to_set__followers=current_user.username)
+            collection.follower_count = len(collection.followers)
+            collection.save()
             msg = 'Succeed to follow this collection'
             
         elif request.form.get('unfollow'):
             collection.modify(unset__followers=current_user.username)
+            collection.follower_count = len(collection.followers)
+            collection.save()
             msg = 'Succeed to unfollow this collection'
         elif request.form.get('export') and current_user.username==collection.owner:
             msg = 'Ready to export'
