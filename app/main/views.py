@@ -192,22 +192,22 @@ class ReposView(MethodView):
         repos = repos.paginate(page=int(cur_page), per_page=PER_PAGE)
 
         #group by aggregate
-        language_cursor = models.Repo._get_collection().aggregate([
-                {
-                    '$match': {'starred_users': current_user.username}
-                },
-                { '$group' : 
-                    { '_id' : {'language' : '$language' }, 
-                      'name' : { '$first' : '$language' },
-                      'count' : { '$sum' : 1 },
-                    }
-                }
-            ])
+        # language_cursor = models.Repo._get_collection().aggregate([
+        #         {
+        #             '$match': {'starred_users': current_user.username}
+        #         },
+        #         { '$group' : 
+        #             { '_id' : {'language' : '$language' }, 
+        #               'name' : { '$first' : '$language' },
+        #               'count' : { '$sum' : 1 },
+        #             }
+        #         }
+        #     ])
 
         data = { 'repos':repos, 'languages':languages.value_list if languages else [], 'cur_language':cur_language, 
             'url_params':url_params }
 
-        data['language_cursor'] = language_cursor
+        # data['language_cursor'] = language_cursor
          
         return render_template(self.template_name, **data)
 

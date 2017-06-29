@@ -30,6 +30,7 @@ main.add_url_rule('/user/collections/<collection_id>/detail/edit/', view_func=co
 main.add_url_rule('/user/collections/<collection_id>/detail/edit/search', view_func=collections.Search4Collection.as_view('collection_detail_edit_search'))
 
 main.add_url_rule('/explore/collections/', view_func=explore.ExploreCollectionView.as_view('explore_collection'))
+main.add_url_rule('/explore/repositories/', view_func=views.ReposView.as_view('explore_repository'))
 
 
 DAOVOICE = GitmarkSettings['daovoice']
