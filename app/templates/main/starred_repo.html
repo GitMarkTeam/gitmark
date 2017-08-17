@@ -14,23 +14,6 @@
                 <p>{{ starred_repo.desc }}</p>
                 <p><span class="label label-default"><small>{{ starred_repo.language }}</small></span></p>
             </div>
-            <!-- <div class="col-md-4">
-                <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" class="btn btn-default btn-sm btn-star" data-url="#">
-                   <i class="fa fa-star"></i></button>
-
-                  <div class="btn-group" role="group">
-                    <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                      <i class="fa fa-cubes"></i>
-                      <span class="caret"></span>
-                    </button>
-                    <ul class="dropdown-menu">
-                      <li><input type="checkbox"> collection 1</li>
-                      <li><input type="checkbox"> collection 2</li>
-                    </ul>
-                  </div>
-                </div>
-            </div> -->
         </div>
         {% if not loop.last %}
         <hr>
@@ -44,22 +27,6 @@
 
 
     </div>
-    <!-- <div class="col-md-3">
-        <h4>Filter by Language <i class="fa fa-filter"></i> </h4>
-        <hr>
-        <div class="list-group">
-            {% for language in languages %}
-                {% if cur_language == language %}
-                    <a href="?language={{ language }}" class="list-group-item no-border-group-list active">{{ language }}
-                    <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
-                    <span class="badge">&nbsp; 2048 &nbsp;</span></a>
-                {% else %}
-                    <a href="?language={{ language }}" class="list-group-item no-border-group-list ">{{ language }}
-                    <span class="badge">&nbsp; 2048 &nbsp;</span></a>
-                {% endif %}
-            {% endfor %}
-        </div>
-    </div> -->
     <div class="col-md-3">
         <h4>Filter by Language <i class="fa fa-filter"></i> </h4>
         <hr>
@@ -71,7 +38,7 @@
                     <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
                     <span class="badge">&nbsp; {{ language.count }} &nbsp;</span></a>
                 {% else %}
-                    <a href="?language={{ language.name | urlencode  }}" class="list-group-item no-border-group-list ">{{ language.name }} 
+                    <a href="?language={{ language.name | urlencode  }}" class="list-group-item no-border-group-list ">{{ language.name }}
                     <span class="badge">&nbsp; {{ language.count }} &nbsp;</span></a>
                 {% endif %}
             {% endif %}
