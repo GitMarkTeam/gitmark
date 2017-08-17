@@ -51,14 +51,14 @@ class IndexView(MethodView):
         starred_repos = models.Repo.objects(starred_users=current_user.username)
         collections = models.Collection.objects(owner=current_user.username)
         following_collections = models.Collection.objects(followers=current_user.username)
-        
+
 
         data['starred_repos'] = starred_repos
         data['collections'] = collections
         data['following_collections'] = following_collections
 
 
-        data['is_public'] = False 
+        data['is_public'] = False
 
         return render_template(self.template_name, **data)
 
@@ -67,16 +67,16 @@ class IndexView(MethodView):
             return self.display_enterprise_page()
 
         if request.form.get('link_github'):
-            session['oauth_callback_type'] = 'link_github'           
+            session['oauth_callback_type'] = 'link_github'
             return github_auth.github_auth()
-        
+
         elif request.form.get('rm_github'):
             current_user.github_username = ''
             current_user.github = None
             current_user.save()
 
-        
-        return redirect(url_for('main.index')) 
+
+        return redirect(url_for('main.index'))
 
 
 class UserView(MethodView):
@@ -87,12 +87,12 @@ class UserView(MethodView):
         data = {}
         # current_user_name = username or current_user.username
         user = accounts_models.User.objects.get_or_404(username=username)
-        
+
         data['user'] = user
         starred_repos = models.Repo.objects(starred_users=username)
         collections = models.Collection.objects(owner=username, is_private=False)
         following_collections = models.Collection.objects(followers=username)
-        
+
 
         data['starred_repos'] = starred_repos
         data['collections'] = collections
@@ -132,19 +132,19 @@ class StarredRepoView(MethodView):
                 {
                     '$match': {'starred_users': current_user.username}
                 },
-                { '$group' : 
-                    { '_id' : {'language' : '$language' }, 
+                { '$group' :
+                    { '_id' : {'language' : '$language' },
                       'name' : { '$first' : '$language' },
                       'count' : { '$sum' : 1 },
                     }
                 }
             ])
 
-        data = { 'starred_repos':repos, 'languages':languages.value_list, 'cur_language':cur_language, 
+        data = { 'starred_repos':repos, 'languages':languages.value_list, 'cur_language':cur_language,
             'url_params':url_params }
 
         data['language_cursor'] = language_cursor
-         
+
         return render_template(self.template_name, **data)
 
 class ImportRepoView(MethodView):
@@ -176,7 +176,8 @@ class ImportRepoView(MethodView):
 
 
 class ReposView(MethodView):
-    decorators = [login_required, admin_permission.require(401),]
+    # decorators = [login_required, admin_permission.require(401),]
+    decorators = [login_required]
     template_name = 'main/repos.html'
 
     def get(self):
@@ -196,19 +197,19 @@ class ReposView(MethodView):
         #         {
         #             '$match': {'starred_users': current_user.username}
         #         },
-        #         { '$group' : 
-        #             { '_id' : {'language' : '$language' }, 
+        #         { '$group' :
+        #             { '_id' : {'language' : '$language' },
         #               'name' : { '$first' : '$language' },
         #               'count' : { '$sum' : 1 },
         #             }
         #         }
         #     ])
 
-        data = { 'repos':repos, 'languages':languages.value_list if languages else [], 'cur_language':cur_language, 
+        data = { 'repos':repos, 'languages':languages.value_list if languages else [], 'cur_language':cur_language,
             'url_params':url_params }
 
         # data['language_cursor'] = language_cursor
-         
+
         return render_template(self.template_name, **data)
 
 class GitHubResultView(MethodView):
@@ -219,7 +220,7 @@ class GitHubResultView(MethodView):
         key = request.args.get('key')
         if not key or not key.strip():
             return redirect('main:index')
-        
+
 
         api = github_apis.search_repos(q=key.strip())
         res = requests.get(api, auth=(app_user, app_pass))
@@ -251,7 +252,7 @@ class GitHubResultView(MethodView):
             data['repos'] = repos
             # return jsonify({'repos':repos})
 
-        
+
 
         return render_template(self.template_name, **data)
 
@@ -287,7 +288,7 @@ class GitHubResultView(MethodView):
             repo = models.Repo.objects.get(full_name=repo_dict['full_name'])
 
             detail_changed = False
-            
+
             if repo.name != repo_dict['name']:
                 repo.name = repo_dict['name']
                 detail_changed = True
@@ -321,7 +322,7 @@ class GitHubResultView(MethodView):
             repo.language = repo_dict.get('language') or 'unknown'
             repo.save()
 
-        return repo 
+        return repo
 
     # def add_repos_to_collections(self, repos, collection):
 
@@ -344,4 +345,3 @@ class GitHubResultView(MethodView):
     def star_repos(self, repos):
         for repo in repos:
             repo.modify(add_to_set__starred_users=current_user.username)
-
