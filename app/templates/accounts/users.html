@@ -17,7 +17,7 @@
             </tr>
     </thead>
     <tbody>
-    {% for user in users %}
+    {% for user in users.items %}
         <tr id="user-{{ user.username }}">
             <td>{{ loop.index }}</td>
             <td><a href="{{ url_for('main.user_view', username=user.username)}}">{{ user.username }}</td>
@@ -36,9 +36,12 @@
         </tr>
     {% else %}
         <tr><td colspan="7">No user yet</td></tr>
-    {% endfor %}     
+    {% endfor %}
     </tbody>
     </table>
+
+    {% import '_pagination.html' as pagination %}
+    {{ pagination.render_pagination(users) }}
 
     </div>
     <div class="col-md-2">
@@ -50,16 +53,16 @@
         </div> -->
         <div class="list-group">
             {% for role in roles %}
-            
+
                 {% if current_role and current_role == role %}
-                    <a href="?current_role={{ current_role }}" class="list-group-item no-border-group-list active">{{ role }} 
+                    <a href="?current_role={{ current_role }}" class="list-group-item no-border-group-list active">{{ role }}
                     <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
                     </a>
                 {% else %}
-                    <a href="?current_role={{ role }}" class="list-group-item no-border-group-list ">{{ role }} 
+                    <a href="?current_role={{ role }}" class="list-group-item no-border-group-list ">{{ role }}
                     </a>
                 {% endif %}
-            
+
             {% endfor %}
         </div>
     </div>

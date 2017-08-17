@@ -59,7 +59,7 @@ GitmarkSettings = {
 
 class Config(object):
     BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))
-    
+
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'fjdlj*^fge$LJDL08_80jflKzcznv*c'
     MONGODB_SETTINGS = {'DB': 'Gitmark'}
 

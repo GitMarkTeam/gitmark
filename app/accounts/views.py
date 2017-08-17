@@ -13,6 +13,7 @@ from .permissions import admin_permission, su_permission
 from utils.misc import send_user_confirm_mail
 from gitmark.config import GitmarkSettings
 
+PER_PAGE = GitmarkSettings['pagination']['admin_per_page']
 default_user_image = GitmarkSettings['default_user_image']
 
 class LoginView(MethodView):
@@ -68,7 +69,7 @@ def register(create_su=False):
     if create_su and not GitmarkSettings['allow_su_creation']:
         msg = 'Register superuser is forbidden, please contact administrator'
         return msg
-        
+
     form = forms.RegistrationForm()
     if form.validate_on_submit():
         user = models.User()
@@ -78,7 +79,7 @@ def register(create_su=False):
 
         user.display_name = user.username
         user.avatar_url = default_user_image
-        
+
         if create_su and GitmarkSettings['allow_su_creation']:
             user.is_superuser = True
         user.save()
@@ -93,7 +94,7 @@ class RegistrationView(MethodView):
     def get(self, form=None, create_su=False):
         if not current_user.is_anonymous:
             return redirect(url_for('main.index'))
-            
+
         if not GitmarkSettings['allow_registration']:
             msg = 'Register is forbidden, please contact administrator'
             return msg
@@ -122,7 +123,7 @@ class RegistrationView(MethodView):
 
             user.display_name = user.username
             user.avatar_url = default_user_image
-            
+
             if create_su and GitmarkSettings['allow_su_creation']:
                 user.is_superuser = True
             user.save()
@@ -167,6 +168,16 @@ class Users(MethodView):
         users = models.User.objects.all()
         if current_role:
             users = users.filter(role=current_role) if not current_role == 'superuser' else users.filter(is_superuser=True)
+
+        try:
+            cur_page = int(request.args.get('page', 1))
+        except ValueError:
+            cur_page = 1
+        total_page = len(users)//PER_PAGE+1
+        if cur_page > total_page:
+            cur_page = total_page
+        users = users.paginate(page=cur_page, per_page=PER_PAGE)
+
         data = {
             'users': users,
             'roles': roles,
@@ -330,7 +341,7 @@ class Password(MethodView):
             password_form2 = forms.PasswordForm2()
         if not user_form:
             user_form = forms.UsernameForm(obj=current_user)
-        
+
         data = {}
         data['password_form'] = password_form
         data['password_form2'] = password_form2
@@ -389,13 +400,13 @@ class Password(MethodView):
                     collections.modify(set__owner=user_form.username.data)
 
                     current_user.username = user_form.username.data
-                
+
                 if user_form.email.data != current_user.email:
                     current_user.email = user_form.email.data
                     current_user.is_email_confirmed = False
-                
+
                 current_user.save()
-            
+
                 msg = 'Succeed to update account'
                 flash(msg, 'success')
 
@@ -427,4 +438,3 @@ class ConfirmEmail(MethodView):
             flash('The confirmation link is invalid or has expired', 'danger')
 
         return redirect(url_for('accounts.password'))
-
