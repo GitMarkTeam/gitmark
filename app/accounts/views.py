@@ -173,7 +173,7 @@ class Users(MethodView):
             cur_page = int(request.args.get('page', 1))
         except ValueError:
             cur_page = 1
-        total_page = len(users)//PER_PAGE+1
+        total_page = len(users)//PER_PAGE+1 if len(users)%PER_PAGE >0 else len(users)//PER_PAGE
         if cur_page > total_page:
             cur_page = total_page
         users = users.paginate(page=cur_page, per_page=PER_PAGE)

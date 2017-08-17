@@ -5,7 +5,7 @@
     <div class="col-md-10 col-md-offset-1">
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#add-collection">
-      Add Collection 
+      Add Collection
     </button>
 
     {% import "_form.html" as forms %}
@@ -44,18 +44,18 @@
                 {{ tag }}
                 <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
             </span>
-            
+
             {% else %}
             <span class="label label-default">
-                {{ tag }} 
+                {{ tag }}
             </span>
-            {% endif %}    
+            {% endif %}
         </a>
         &nbsp;
         {% endfor %}
       {% endif %}
     </div>
-    
+
     <br>
     <table class="table">
         <thead>
@@ -68,7 +68,7 @@
             <th style="text-align: center;">Actions</th>
         </thead>
         <tbody>
-        {% for collection in collections %}
+        {% for collection in collections.items %}
         <tr>
             <td>{{ loop.index }}</td>
             <td><a href="{{ url_for('main.collection_detail', collection_id=collection.id) }}">{{ collection.name }}</a></td>
@@ -83,11 +83,14 @@
         </tr>
         {% else %}
         <tr><td colspan="6">No collection yet</td></tr>
-        
-            
+
+
         {% endfor %}
         </tbody>
     </table>
+
+    {% import '_pagination.html' as pagination %}
+    {{ pagination.render_pagination(collections) }}
 
     </div>
 </div>

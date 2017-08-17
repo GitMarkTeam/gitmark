@@ -45,6 +45,16 @@ class MyCollectionsView(MethodView):
         if cur_tag:
             collections = collections.filter(tags=cur_tag)
 
+        try:
+            cur_page = int(request.args.get('page', 1))
+        except ValueError:
+            cur_page = 1
+        total_page = len(collections)//PER_PAGE+1 if len(collections)%PER_PAGE >0 else len(collections)//PER_PAGE
+        if cur_page > total_page:
+            cur_page = total_page
+
+        print cur_page
+        collections = collections.paginate(page=cur_page, per_page=PER_PAGE)
         data = { 'collections':collections, 'form':form, 'tags': tags, 'cur_tag':cur_tag }
 
         return render_template(self.template_name, **data)
@@ -159,7 +169,7 @@ class CollectionView(MethodView):
             collections = models.Collection.objects(owner=collection.owner, is_private=False)
             if not current_user.is_anonymous and current_user.username in collection.followers:
                 following = True
-        
+
         data['collections'] = collections
         data['can_edit'] = can_edit
         data['following'] = following
@@ -180,7 +190,7 @@ class CollectionView(MethodView):
             collection.follower_count = len(collection.followers)
             collection.save()
             msg = 'Succeed to follow this collection'
-            
+
         elif request.form.get('unfollow'):
             collection.modify(unset__followers=current_user.username)
             collection.follower_count = len(collection.followers)
@@ -305,7 +315,7 @@ class CollectionDetailEditView(MethodView):
         full_name = request.args.get('full_name')
         repos = collection.repos
         filtered_repos = filter(lambda x:x['full_name']==full_name, repos)
-        
+
         try:
             collection.modify(pull__repos=filtered_repos[0])
         except:
@@ -357,7 +367,7 @@ class Search4Collection(MethodView):
 
         repos = repos.paginate(page=cur_page, per_page=PER_PAGE)
         data['repos'] = repos
-        
+
         return render_template(self.template_name, **data)
 
     def post(self, collection_id):
