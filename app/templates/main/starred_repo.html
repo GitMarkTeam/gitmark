@@ -50,11 +50,11 @@
         <div class="list-group">
             {% for language in languages %}
                 {% if cur_language == language %}
-                    <a href="?language={{ language }}" class="list-group-item no-border-group-list active">{{ language }} 
+                    <a href="?language={{ language }}" class="list-group-item no-border-group-list active">{{ language }}
                     <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
                     <span class="badge">&nbsp; 2048 &nbsp;</span></a>
                 {% else %}
-                    <a href="?language={{ language }}" class="list-group-item no-border-group-list ">{{ language }} 
+                    <a href="?language={{ language }}" class="list-group-item no-border-group-list ">{{ language }}
                     <span class="badge">&nbsp; 2048 &nbsp;</span></a>
                 {% endif %}
             {% endfor %}
@@ -67,11 +67,11 @@
             {% for language in language_cursor %}
             {% if language %}
                 {% if cur_language == language.name %}
-                    <a href="?language={{language.name }}" class="list-group-item no-border-group-list active">{{ language.name }} 
+                    <a href="?language={{language.name | urlencode }}" class="list-group-item no-border-group-list active">{{ language.name }}
                     <small><span class="glyphicon glyphicon-remove small rm-filter" aria-hidden="true"></span></small>
                     <span class="badge">&nbsp; {{ language.count }} &nbsp;</span></a>
                 {% else %}
-                    <a href="?language={{ language.name }}" class="list-group-item no-border-group-list ">{{ language.name }} 
+                    <a href="?language={{ language.name | urlencode  }}" class="list-group-item no-border-group-list ">{{ language.name }} 
                     <span class="badge">&nbsp; {{ language.count }} &nbsp;</span></a>
                 {% endif %}
             {% endif %}

@@ -3,6 +3,7 @@ from flask import Blueprint, g
 from . import views, collections, explore
 from utils import errors
 from gitmark.config import GitmarkSettings
+from utils import template_filters
 
 main = Blueprint('main', __name__)
 
@@ -39,3 +40,5 @@ DAOVOICE = GitmarkSettings['daovoice']
 def before_request():
     g.allow_daovoice = DAOVOICE['allow_daovoice']
     g.daovoice_app_id = DAOVOICE['app_id']
+
+main.add_app_template_filter(template_filters.urlencode_filter, name='urlencode')
