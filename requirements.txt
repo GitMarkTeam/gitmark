@@ -4,9 +4,9 @@ flask-login
 Flask-WTF
 flask-principal
 WTForms
-mongoengine==0.10.1
+mongoengine
 flask_mongoengine
-markdown2==2.3.0
+markdown2
 requests
 requests_oauthlib
 celery[redis]

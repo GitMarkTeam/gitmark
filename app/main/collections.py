@@ -49,11 +49,15 @@ class MyCollectionsView(MethodView):
             cur_page = int(request.args.get('page', 1))
         except ValueError:
             cur_page = 1
-        total_page = len(collections)//PER_PAGE+1 if len(collections)%PER_PAGE >0 else len(collections)//PER_PAGE
+        
+        if not collections:
+            total_page = 1 # at least 1 page
+        else:
+            total_page = len(collections)//PER_PAGE+1 if len(collections)%PER_PAGE >0 else len(collections)//PER_PAGE
+        
         if cur_page > total_page:
             cur_page = total_page
 
-        print cur_page
         collections = collections.paginate(page=cur_page, per_page=PER_PAGE)
         data = { 'collections':collections, 'form':form, 'tags': tags, 'cur_tag':cur_tag }
 
